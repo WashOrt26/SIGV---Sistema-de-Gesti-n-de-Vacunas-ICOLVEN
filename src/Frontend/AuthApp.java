@@ -1,62 +1,65 @@
 package Frontend;
 
-import javax.swing.*; //Importa componentes graficos
-import javax.swing.border.EmptyBorder; //Son los espacios entre las cosas
-import java.awt.*; // Pal color la letra pues diseño
-import java.awt.event.ActionEvent; //Es el de manejo de eventos
-import java.awt.event.ActionListener;/// Falta
-import java.util.ArrayList; //Almacena
-import java.util.List; //Almacena
+import javax.swing.*; // Importa componentes gráficos
+import javax.swing.border.EmptyBorder; // Para manejar bordes vacíos
+import java.awt.*; // Para manejar colores y diseño
+import java.awt.event.ActionEvent; // Para manejar eventos de acción
+import java.awt.event.ActionListener; // Para manejar eventos de acción
+import java.awt.event.FocusAdapter; // Para manejar el comportamiento del placeholder
+import java.awt.event.FocusEvent; // Para manejar el comportamiento del placeholder
+import java.util.ArrayList; // Para almacenar datos en una lista
+import java.util.List; // Para almacenar datos en una lista
 
 public class AuthApp extends JFrame {
-    //Colores de la pagina
-    private static final Color PRIMARY_COLOR = new Color(69, 153, 126); // #45997E
-    private static final Color WHITE_COLOR = new Color(255, 255, 255);
-    private static final Color LIGHT_GRAY = new Color(245, 245, 245);
+    // Colores personalizados
+    private static final Color PRIMARY_COLOR = new Color(69, 153, 126); // Color principal
+    private static final Color WHITE_COLOR = new Color(255, 255, 255); // Color blanco
+    private static final Color LIGHT_GRAY = new Color(245, 245, 245); // Color gris claro
+    private static final Color PLACEHOLDER_COLOR = new Color(160, 160, 160); // Color para el placeholder
 
     // Componentes de la interfaz
-    private JPanel contentPane;// Es la interfaz como tal
-    private JPanel leftPanel; //Panel
-    private JPanel rightPanel;//Panel
-    private CardLayout cardLayout; // Es pa que se pueda cambiar entre los paneles
-    private JPanel formPanel; //Contiene los campos de entrada y botones para la autenticación.
+    private JPanel contentPane; // Panel principal
+    private JPanel leftPanel; // Panel izquierdo (verde)
+    private JPanel rightPanel; // Panel derecho (blanco)
+    private CardLayout cardLayout; // Para manejar el cambio entre formularios
+    private JPanel formPanel; // Contiene los formularios de login y registro
 
     // Componentes del formulario de login
-    private JTextField emailLoginField; //Pa ingresar el Email
-    private JPasswordField passwordLoginField; //Contrasea tipo *******
-    private JButton loginButton; //Button pal inicio de sección
-    private JButton switchToRegisterButton; // Button pa cambiar a regristo
+    private JTextField emailLoginField; // Campo para ingresar el email
+    private JPasswordField passwordLoginField; // Campo para ingresar la contraseña
+    private JButton loginButton; // Botón para iniciar sesión
+    private JButton switchToRegisterButton; // Botón para cambiar a registro
 
     // Componentes del formulario de registro
-    private JTextField nameRegisterField; //Name pa que se registre
-    private JTextField emailRegisterField; //Email
-    private JPasswordField passwordRegisterField;//Contraseña *** en
-    private ButtonGroup roleGroup; //Permite la selección del rol
-    private JRadioButton padreRadio; //Opcion de padre
-    private JRadioButton directivaRadio; //Opcion directiva
-    private JRadioButton medicoRadio;  //Opcion Medico
-    private JComboBox<String> studentComboBox; //Desplegable
-    private JButton registerButton; //Button de registro
-    private JButton switchToLoginButton; // Pa cambiar al login
+    private JTextField nameRegisterField; // Campo para ingresar el nombre
+    private JTextField emailRegisterField; // Campo para ingresar el email
+    private JPasswordField passwordRegisterField; // Campo para ingresar la contraseña
+    private ButtonGroup roleGroup; // Grupo para manejar la selección de rol
+    private JRadioButton padreRadio; // Opción de padre
+    private JRadioButton directivaRadio; // Opción de directiva
+    private JRadioButton medicoRadio; // Opción de médico
+    private JComboBox<String> studentComboBox; // ComboBox para seleccionar estudiante
+    private JButton registerButton; // Botón para registrar
+    private JButton switchToLoginButton; // Botón para cambiar a login
 
-    /// Datos del ejemplo porque no hay base de datos
+    // Datos de ejemplo (simulando una base de datos)
     private List<Estudiante> estudiantes;
 
     public AuthApp() {
-        setupSampleData(); ///Metodo ficticio porque no hay base de datos
+        setupSampleData(); // Configura datos de ejemplo
 
         // Configuración de la ventana principal
         setTitle("Sistema de Vacunación");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Es pa scerra la ventana
-        setBounds(100, 100, 1000, 600); //Tamaño de pantalla maximo
-        setMinimumSize(new Dimension(800, 500)); //Minimo tamaño
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cerrar la aplicación al cerrar la ventana
+        setBounds(100, 100, 800, 600); // Tamaño de la ventana
+        setMinimumSize(new Dimension(600, 400)); // Tamaño mínimo de la ventana
 
         // Panel principal
-        contentPane = new JPanel(); //Contenedor principal
-        contentPane.setLayout(new BorderLayout(0, 0));//Organiza los elementos en Norte, Sur, Este, Oeste y Centro.
-        setContentPane(contentPane); //Asigna este panel como la base de la ventana.
+        contentPane = new JPanel(); // Crear el panel principal
+        contentPane.setLayout(new BorderLayout(0, 0)); // Establecer el layout
+        setContentPane(contentPane); // Asignar el panel principal a la ventana
 
-        // Configuración de paneles pues el de izquierda y derecha uno verde y otro y los otros :D
+        // Configuración de paneles
         setupPanels();
 
         // Configuración de formularios
@@ -64,320 +67,435 @@ public class AuthApp extends JFrame {
         setupRegisterForm();
 
         // Mostrar formulario de login por defecto
-        cardLayout.show(formPanel, "login"); //Frompanel es el panel de los formularios  y pues primero va salir es de login
+        cardLayout.show(formPanel, "login"); // Mostrar el formulario de login
     }
-    /// Haber esto es pal ejemplo porque pues como no hay base de datos pues pa cuando la tengan
+
     private void setupSampleData() {
+        // Simulación de datos de estudiantes
         estudiantes = new ArrayList<>();
         estudiantes.add(new Estudiante("1", "Juan Pérez", "1° A"));
         estudiantes.add(new Estudiante("2", "María García", "2° B"));
         estudiantes.add(new Estudiante("3", "Carlos López", "3° C"));
+        estudiantes.add(new Estudiante("4", "Ana Rodríguez", "1° B"));
+        estudiantes.add(new Estudiante("5", "Pedro Sánchez", "2° A"));
     }
-    /// ..........................................................................................
+
     private void setupPanels() {
         // Panel izquierdo (verde)
-        leftPanel = new JPanel(); //Creamos panel
-        leftPanel.setBackground(PRIMARY_COLOR);
-        leftPanel.setLayout(new BorderLayout());//Orden pal panel
-        contentPane.add(leftPanel, BorderLayout.WEST); //West Izquierda
-        leftPanel.setPreferredSize(new Dimension(400, getHeight()));
+        leftPanel = new JPanel(); // Crear el panel izquierdo
+        leftPanel.setBackground(PRIMARY_COLOR); // Establecer el color de fondo
+        leftPanel.setLayout(new BorderLayout()); // Establecer el layout
+        contentPane.add(leftPanel, BorderLayout.WEST); // Agregar el panel izquierdo al panel principal
+        leftPanel.setPreferredSize(new Dimension(400, getHeight())); // Establecer el tamaño preferido
 
         // Panel derecho (blanco)
-        rightPanel = new JPanel();
-        rightPanel.setBackground(WHITE_COLOR);
-        rightPanel.setLayout(new BorderLayout());
-        contentPane.add(rightPanel, BorderLayout.CENTER);
+        rightPanel = new JPanel(); // Crear el panel derecho
+        rightPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        rightPanel.setLayout(new BorderLayout()); // Establecer el layout
+        contentPane.add(rightPanel, BorderLayout.CENTER); // Agregar el panel derecho al panel principal
 
         // Panel para los formularios con CardLayout
-        cardLayout = new CardLayout();
-        formPanel = new JPanel(cardLayout);
-        formPanel.setBackground(WHITE_COLOR);
-        rightPanel.add(formPanel, BorderLayout.CENTER);
+        cardLayout = new CardLayout(); // Crear el CardLayout
+        formPanel = new JPanel(cardLayout); // Crear el panel de formularios
+        formPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        rightPanel.add(formPanel, BorderLayout.CENTER); // Agregar el panel de formularios al panel derecho
     }
 
     private void setupLoginForm() {
         // Panel de bienvenida para login
         JPanel welcomeLoginPanel = new JPanel();
-        welcomeLoginPanel.setLayout(new BoxLayout(welcomeLoginPanel, BoxLayout.Y_AXIS));//Orientación vertical
-        welcomeLoginPanel.setBackground(PRIMARY_COLOR);
-        welcomeLoginPanel.setBorder(new EmptyBorder(30, 30, 30, 30));
+        welcomeLoginPanel.setLayout(new BoxLayout(welcomeLoginPanel, BoxLayout.Y_AXIS)); // Orientación vertical
+        welcomeLoginPanel.setBackground(PRIMARY_COLOR); // Establecer el color de fondo
+        welcomeLoginPanel.setBorder(new EmptyBorder(30, 30, 30, 30)); // Espaciado interno
 
-        JLabel welcomeTitle = new JLabel("¡Bienvenido de nuevo!");
-        welcomeTitle.setForeground(WHITE_COLOR);
-        welcomeTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        welcomeTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel welcomeTitle = new JLabel("¡Bienvenido de nuevo!"); // Título de bienvenida
+        welcomeTitle.setForeground(WHITE_COLOR); // Establecer el color del texto
+        welcomeTitle.setFont(new Font("Arial", Font.BOLD, 20)); // Tamaño de fuente ajustado
+        welcomeTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
         JLabel welcomeText = new JLabel("<html><div style='text-align: center;'>Para mantenerte conectado con nosotros, inicia sesión con tu información personal</div></html>");
-        welcomeText.setForeground(WHITE_COLOR);
-        welcomeText.setFont(new Font("Arial", Font.PLAIN, 14));
-        welcomeText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        welcomeText.setForeground(WHITE_COLOR); // Establecer el color del texto
+        welcomeText.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        welcomeText.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
-        welcomeLoginPanel.add(Box.createVerticalGlue());
-        welcomeLoginPanel.add(welcomeTitle);
-        welcomeLoginPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        welcomeLoginPanel.add(welcomeText);
-        welcomeLoginPanel.add(Box.createVerticalGlue());
+        welcomeLoginPanel.add(Box.createVerticalGlue()); // Espacio flexible
+        welcomeLoginPanel.add(welcomeTitle); // Agregar título
+        welcomeLoginPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        welcomeLoginPanel.add(welcomeText); // Agregar texto de bienvenida
+        welcomeLoginPanel.add(Box.createVerticalGlue()); // Espacio flexible
 
-        leftPanel.add(welcomeLoginPanel, BorderLayout.CENTER);
+        leftPanel.add(welcomeLoginPanel, BorderLayout.CENTER); // Agregar el panel de bienvenida al panel izquierdo
 
         // Panel de formulario de login
         JPanel loginPanel = new JPanel();
-        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
-        loginPanel.setBackground(WHITE_COLOR);
-        loginPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
+        loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS)); // Orientación vertical
+        loginPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        loginPanel.setBorder(new EmptyBorder(30, 50, 30, 50)); // Espaciado interno
 
         // Título del formulario
         JLabel loginTitle = new JLabel("Iniciar Sesión");
-        loginTitle.setForeground(PRIMARY_COLOR);
-        loginTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        loginTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginTitle.setForeground(PRIMARY_COLOR); // Establecer el color del texto
+        loginTitle.setFont(new Font("Arial", Font.BOLD, 20)); // Tamaño de fuente ajustado
+        loginTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
         // Campo de email
-        JPanel emailPanel = new JPanel(new BorderLayout());
-        emailPanel.setBackground(WHITE_COLOR);
-        emailPanel.setMaximumSize(new Dimension(400, 50));
+        JPanel emailPanel = new JPanel(new BorderLayout()); // Panel para el campo de email
+        emailPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        emailPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
-        JLabel emailIcon = new JLabel("✉");
-        emailIcon.setFont(new Font("Arial", Font.PLAIN, 18));
-        emailIcon.setBorder(new EmptyBorder(0, 5, 0, 10));
-        emailIcon.setForeground(Color.GRAY);
+        JLabel emailIcon = new JLabel("✉"); // Icono de email
+        emailIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        emailIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
+        emailIcon.setForeground(Color.GRAY); // Color del icono
 
-        emailLoginField = new JTextField();
-        emailLoginField.setFont(new Font("Arial", Font.PLAIN, 14));
+        emailLoginField = new JTextField("Correo electrónico"); // Campo de texto para email
+        emailLoginField.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente
         emailLoginField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        emailLoginField.setBackground(LIGHT_GRAY);
+                BorderFactory.createLineBorder(LIGHT_GRAY), // Borde gris
+                BorderFactory.createEmptyBorder(10, 10, 10, 10))); // Espaciado interno
+        emailLoginField.setBackground(LIGHT_GRAY); // Color de fondo
+        emailLoginField.setForeground(PLACEHOLDER_COLOR); // Color del texto
 
-        emailPanel.add(emailIcon, BorderLayout.WEST);
-        emailPanel.add(emailLoginField, BorderLayout.CENTER);
+        // Agregar comportamiento de placeholder
+        emailLoginField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (emailLoginField.getText().equals("Correo electrónico")) {
+                    emailLoginField.setText(""); // Limpiar el campo
+                    emailLoginField.setForeground(Color.BLACK); // Cambiar color del texto
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (emailLoginField.getText().isEmpty()) {
+                    emailLoginField.setText("Correo electrónico"); // Restablecer el placeholder
+                    emailLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                }
+            }
+        });
+
+        emailPanel.add(emailIcon, BorderLayout.WEST); // Agregar icono al panel
+        emailPanel.add(emailLoginField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
         // Campo de contraseña
-        JPanel passwordPanel = new JPanel(new BorderLayout());
-        passwordPanel.setBackground(WHITE_COLOR);
-        passwordPanel.setMaximumSize(new Dimension(400, 50));
+        JPanel passwordPanel = new JPanel(new BorderLayout()); // Panel para el campo de contraseña
+        passwordPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        passwordPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
-        JLabel passwordIcon = new JLabel("🔒");
-        passwordIcon.setFont(new Font("Arial", Font.PLAIN, 18));
-        passwordIcon.setBorder(new EmptyBorder(0, 5, 0, 10));
-        passwordIcon.setForeground(Color.GRAY);
+        JLabel passwordIcon = new JLabel("🔒"); // Icono de contraseña
+        passwordIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        passwordIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
+        passwordIcon.setForeground(Color.GRAY); // Color del icono
 
-        passwordLoginField = new JPasswordField();
-        passwordLoginField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordLoginField = new JPasswordField("Contraseña"); // Campo de texto para contraseña
+        passwordLoginField.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente
         passwordLoginField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        passwordLoginField.setBackground(LIGHT_GRAY);
+                BorderFactory.createLineBorder(LIGHT_GRAY), // Borde gris
+                BorderFactory.createEmptyBorder(10, 10, 10, 10))); // Espaciado interno
+        passwordLoginField.setBackground(LIGHT_GRAY); // Color de fondo
+        passwordLoginField.setForeground(PLACEHOLDER_COLOR); // Color del texto
+        passwordLoginField.setEchoChar((char) 0); // Mostrar texto para el placeholder
 
-        passwordPanel.add(passwordIcon, BorderLayout.WEST);
-        passwordPanel.add(passwordLoginField, BorderLayout.CENTER);
+        // Agregar comportamiento de placeholder
+        passwordLoginField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (String.valueOf(passwordLoginField.getPassword()).equals("Contraseña")) {
+                    passwordLoginField.setText(""); // Limpiar el campo
+                    passwordLoginField.setEchoChar('•'); // Activar caracteres de contraseña
+                    passwordLoginField.setForeground(Color.BLACK); // Cambiar color del texto
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordLoginField.getPassword().length == 0) {
+                    passwordLoginField.setText("Contraseña"); // Restablecer el placeholder
+                    passwordLoginField.setEchoChar((char) 0); // Desactivar caracteres de contraseña
+                    passwordLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                }
+            }
+        });
+
+        passwordPanel.add(passwordIcon, BorderLayout.WEST); // Agregar icono al panel
+        passwordPanel.add(passwordLoginField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
         // Botón de login
-        loginButton = new JButton("INICIAR SESIÓN");
-        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
-        loginButton.setBackground(PRIMARY_COLOR);
-        loginButton.setForeground(WHITE_COLOR);
-        loginButton.setFocusPainted(false);
-        loginButton.setBorderPainted(false);
-        loginButton.setMaximumSize(new Dimension(400, 50));
-        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton = new JButton("INICIAR SESIÓN"); // Botón para iniciar sesión
+        loginButton.setFont(new Font("Arial", Font.BOLD, 16)); // Tamaño de fuente ajustado
+        loginButton.setBackground(PRIMARY_COLOR); // Color de fondo
+        loginButton.setForeground(WHITE_COLOR); // Color del texto
+        loginButton.setFocusPainted(false); // Sin borde al hacer clic
+        loginButton.setBorderPainted(false); // Sin borde
+        loginButton.setMaximumSize(new Dimension(400, 50)); // Más grande para PC
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el botón
 
         // Enlace para cambiar a registro
-        switchToRegisterButton = new JButton("¿No tienes cuenta? Regístrate");
-        switchToRegisterButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        switchToRegisterButton.setForeground(PRIMARY_COLOR);
-        switchToRegisterButton.setBorderPainted(false);
-        switchToRegisterButton.setContentAreaFilled(false);
-        switchToRegisterButton.setFocusPainted(false);
-        switchToRegisterButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        switchToRegisterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        switchToRegisterButton = new JButton("¿No tienes cuenta? Regístrate"); // Botón para cambiar a registro
+        switchToRegisterButton.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        switchToRegisterButton.setForeground(PRIMARY_COLOR); // Color del texto
+        switchToRegisterButton.setBorderPainted(false); // Sin borde
+        switchToRegisterButton.setContentAreaFilled(false); // Sin fondo
+        switchToRegisterButton.setFocusPainted(false); // Sin borde al hacer clic
+        switchToRegisterButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
+        switchToRegisterButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el botón
 
         // Acción para cambiar al formulario de registro
         switchToRegisterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateWelcomePanel(false);
-                cardLayout.show(formPanel, "register");
+                updateWelcomePanel(false); // Actualizar el panel de bienvenida
+                cardLayout.show(formPanel, "register"); // Mostrar el formulario de registro
             }
         });
 
         // Agregar componentes al panel de login
-        loginPanel.add(Box.createVerticalGlue());
-        loginPanel.add(loginTitle);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-        loginPanel.add(emailPanel);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        loginPanel.add(passwordPanel);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        loginPanel.add(loginButton);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        loginPanel.add(switchToRegisterButton);
-        loginPanel.add(Box.createVerticalGlue());
+        loginPanel.add(Box.createVerticalGlue()); // Espacio flexible
+        loginPanel.add(loginTitle); // Agregar título
+        loginPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        loginPanel.add(emailPanel); // Agregar campo de email
+        loginPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        loginPanel.add(passwordPanel); // Agregar campo de contraseña
+        loginPanel.add(Box.createRigidArea(new Dimension(0, 30))); // Espacio rígido
+        loginPanel.add(loginButton); // Agregar botón de login
+        loginPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        loginPanel.add(switchToRegisterButton); // Agregar enlace a registro
+        loginPanel.add(Box.createVerticalGlue()); // Espacio flexible
 
         // Agregar panel de login al panel de formularios
-        formPanel.add(loginPanel, "login");
+        formPanel.add(loginPanel, "login"); // Agregar el panel de login al CardLayout
     }
 
     private void setupRegisterForm() {
         // Panel de formulario de registro
         JPanel registerPanel = new JPanel();
-        registerPanel.setLayout(new BoxLayout(registerPanel, BoxLayout.Y_AXIS));
-        registerPanel.setBackground(WHITE_COLOR);
-        registerPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
+        registerPanel.setLayout(new BoxLayout(registerPanel, BoxLayout.Y_AXIS)); // Orientación vertical
+        registerPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        registerPanel.setBorder(new EmptyBorder(30, 50, 30, 50)); // Más padding
 
         // Título del formulario
         JLabel registerTitle = new JLabel("Crear Cuenta");
-        registerTitle.setForeground(PRIMARY_COLOR);
-        registerTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        registerTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        registerTitle.setForeground(PRIMARY_COLOR); // Establecer el color del texto
+        registerTitle.setFont(new Font("Arial", Font.BOLD, 24)); // Tamaño de fuente ajustado
+        registerTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
         // Campo de nombre
-        JPanel namePanel = new JPanel(new BorderLayout());
-        namePanel.setBackground(WHITE_COLOR);
-        namePanel.setMaximumSize(new Dimension(400, 50));
+        JPanel namePanel = new JPanel(new BorderLayout()); // Panel para el campo de nombre
+        namePanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        namePanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
-        JLabel nameIcon = new JLabel("👤");
-        nameIcon.setFont(new Font("Arial", Font.PLAIN, 18));
-        nameIcon.setBorder(new EmptyBorder(0, 5, 0, 10));
-        nameIcon.setForeground(Color.GRAY);
+        JLabel nameIcon = new JLabel("👤"); // Icono de nombre
+        nameIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        nameIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
+        nameIcon.setForeground(Color.GRAY); // Color del icono
 
-        nameRegisterField = new JTextField();
-        nameRegisterField.setFont(new Font("Arial", Font.PLAIN, 14));
+        nameRegisterField = new JTextField("Nombre y apellidos"); // Campo de texto para nombre
+        nameRegisterField.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente
         nameRegisterField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        nameRegisterField.setBackground(LIGHT_GRAY);
+                BorderFactory.createLineBorder(LIGHT_GRAY), // Borde gris
+                BorderFactory.createEmptyBorder(10, 10, 10, 10))); // Espaciado interno
+        nameRegisterField.setBackground(LIGHT_GRAY); // Color de fondo
+        nameRegisterField.setForeground(PLACEHOLDER_COLOR); // Color del texto
 
-        namePanel.add(nameIcon, BorderLayout.WEST);
-        namePanel.add(nameRegisterField, BorderLayout.CENTER);
+        // Agregar comportamiento de placeholder
+        nameRegisterField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (nameRegisterField.getText().equals("Nombre y apellidos")) {
+                    nameRegisterField.setText(""); // Limpiar el campo
+                    nameRegisterField.setForeground(Color.BLACK); // Cambiar color del texto
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (nameRegisterField.getText().isEmpty()) {
+                    nameRegisterField.setText("Nombre y apellidos"); // Restablecer el placeholder
+                    nameRegisterField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                }
+            }
+        });
+
+        namePanel.add(nameIcon, BorderLayout.WEST); // Agregar icono al panel
+        namePanel.add(nameRegisterField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
         // Campo de email
-        JPanel emailRegisterPanel = new JPanel(new BorderLayout());
-        emailRegisterPanel.setBackground(WHITE_COLOR);
-        emailRegisterPanel.setMaximumSize(new Dimension(400, 50));
+        JPanel emailRegisterPanel = new JPanel(new BorderLayout()); // Panel para el campo de email
+        emailRegisterPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        emailRegisterPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
-        JLabel emailRegisterIcon = new JLabel("✉");
-        emailRegisterIcon.setFont(new Font("Arial", Font.PLAIN, 18));
-        emailRegisterIcon.setBorder(new EmptyBorder(0, 5, 0, 10));
-        emailRegisterIcon.setForeground(Color.GRAY);
+        JLabel emailRegisterIcon = new JLabel("✉"); // Icono de email
+        emailRegisterIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        emailRegisterIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
+        emailRegisterIcon.setForeground(Color.GRAY); // Color del icono
 
-        emailRegisterField = new JTextField();
-        emailRegisterField.setFont(new Font("Arial", Font.PLAIN, 14));
+        emailRegisterField = new JTextField("Correo electrónico"); // Campo de texto para email
+        emailRegisterField.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente
         emailRegisterField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        emailRegisterField.setBackground(LIGHT_GRAY);
+                BorderFactory.createLineBorder(LIGHT_GRAY), // Borde gris
+                BorderFactory.createEmptyBorder(10, 10, 10, 10))); // Espaciado interno
+        emailRegisterField.setBackground(LIGHT_GRAY); // Color de fondo
+        emailRegisterField.setForeground(PLACEHOLDER_COLOR); // Color del texto
 
-        emailRegisterPanel.add(emailRegisterIcon, BorderLayout.WEST);
-        emailRegisterPanel.add(emailRegisterField, BorderLayout.CENTER);
+        // Agregar comportamiento de placeholder
+        emailRegisterField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (emailRegisterField.getText().equals("Correo electrónico")) {
+                    emailRegisterField.setText(""); // Limpiar el campo
+                    emailRegisterField.setForeground(Color.BLACK); // Cambiar color del texto
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (emailRegisterField.getText().isEmpty()) {
+                    emailRegisterField.setText("Correo electrónico"); // Restablecer el placeholder
+                    emailRegisterField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                }
+            }
+        });
+
+        emailRegisterPanel.add(emailRegisterIcon, BorderLayout.WEST); // Agregar icono al panel
+        emailRegisterPanel.add(emailRegisterField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
         // Campo de contraseña
-        JPanel passwordRegisterPanel = new JPanel(new BorderLayout());
-        passwordRegisterPanel.setBackground(WHITE_COLOR);
-        passwordRegisterPanel.setMaximumSize(new Dimension(400, 50));
+        JPanel passwordRegisterPanel = new JPanel(new BorderLayout()); // Panel para el campo de contraseña
+        passwordRegisterPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        passwordRegisterPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
-        JLabel passwordRegisterIcon = new JLabel("🔒");
-        passwordRegisterIcon.setFont(new Font("Arial", Font.PLAIN, 18));
-        passwordRegisterIcon.setBorder(new EmptyBorder(0, 5, 0, 10));
-        passwordRegisterIcon.setForeground(Color.GRAY);
+        JLabel passwordRegisterIcon = new JLabel("🔒"); // Icono de contraseña
+        passwordRegisterIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        passwordRegisterIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
+        passwordRegisterIcon.setForeground(Color.GRAY); // Color del icono
 
-        passwordRegisterField = new JPasswordField();
-        passwordRegisterField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordRegisterField = new JPasswordField("Contraseña"); // Campo de texto para contraseña
+        passwordRegisterField.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente
         passwordRegisterField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        passwordRegisterField.setBackground(LIGHT_GRAY);
+                BorderFactory.createLineBorder(LIGHT_GRAY), // Borde gris
+                BorderFactory.createEmptyBorder(10, 10, 10, 10))); // Espaciado interno
+        passwordRegisterField.setBackground(LIGHT_GRAY); // Color de fondo
+        passwordRegisterField.setForeground(PLACEHOLDER_COLOR); // Color del texto
+        passwordRegisterField.setEchoChar((char) 0); // Mostrar texto para el placeholder
 
-        passwordRegisterPanel.add(passwordRegisterIcon, BorderLayout.WEST);
-        passwordRegisterPanel.add(passwordRegisterField, BorderLayout.CENTER);
+        // Agregar comportamiento de placeholder
+        passwordRegisterField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (String.valueOf(passwordRegisterField.getPassword()).equals("Contraseña")) {
+                    passwordRegisterField.setText(""); // Limpiar el campo
+                    passwordRegisterField.setEchoChar('•'); // Activar caracteres de contraseña
+                    passwordRegisterField.setForeground(Color.BLACK); // Cambiar color del texto
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (passwordRegisterField.getPassword().length == 0) {
+                    passwordRegisterField.setText("Contraseña"); // Restablecer el placeholder
+                    passwordRegisterField.setEchoChar((char) 0); // Desactivar caracteres de contraseña
+                    passwordRegisterField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                }
+            }
+        });
+
+        passwordRegisterPanel.add(passwordRegisterIcon, BorderLayout.WEST); // Agregar icono al panel
+        passwordRegisterPanel.add(passwordRegisterField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
         // Panel de selección de rol
         JPanel rolePanel = new JPanel();
-        rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS));
-        rolePanel.setBackground(WHITE_COLOR);
-        rolePanel.setMaximumSize(new Dimension(400, 120));
-        rolePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS)); // Orientación vertical
+        rolePanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        rolePanel.setMaximumSize(new Dimension(400, 150)); // Más grande para PC
+        rolePanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
 
         JLabel roleLabel = new JLabel("Seleccione su rol:");
-        roleLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        roleLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño de fuente ajustado
+        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
 
-        roleGroup = new ButtonGroup();
+        roleGroup = new ButtonGroup(); // Grupo para los botones de radio
 
         padreRadio = new JRadioButton("Padre");
-        padreRadio.setFont(new Font("Arial", Font.PLAIN, 14));
-        padreRadio.setBackground(WHITE_COLOR);
-        padreRadio.setSelected(true);
+        padreRadio.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        padreRadio.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        padreRadio.setSelected(true); // Seleccionar por defecto
 
         directivaRadio = new JRadioButton("Directiva");
-        directivaRadio.setFont(new Font("Arial", Font.PLAIN, 14));
-        directivaRadio.setBackground(WHITE_COLOR);
+        directivaRadio.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        directivaRadio.setBackground(WHITE_COLOR); // Establecer el color de fondo
 
         medicoRadio = new JRadioButton("Médico");
-        medicoRadio.setFont(new Font("Arial", Font.PLAIN, 14));
-        medicoRadio.setBackground(WHITE_COLOR);
+        medicoRadio.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        medicoRadio.setBackground(WHITE_COLOR); // Establecer el color de fondo
 
+        // Agregar los botones de radio al grupo
         roleGroup.add(padreRadio);
         roleGroup.add(directivaRadio);
         roleGroup.add(medicoRadio);
 
+        // Agregar componentes al panel de selección de rol
         rolePanel.add(roleLabel);
-        rolePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        rolePanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre el label y los botones
         rolePanel.add(padreRadio);
+        rolePanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre los botones
         rolePanel.add(directivaRadio);
+        rolePanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre los botones
         rolePanel.add(medicoRadio);
 
         // Panel de selección de estudiante
         JPanel studentPanel = new JPanel();
-        studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS));
-        studentPanel.setBackground(WHITE_COLOR);
-        studentPanel.setMaximumSize(new Dimension(400, 80));
-        studentPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS)); // Orientación vertical
+        studentPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        studentPanel.setMaximumSize(new Dimension(400, 80)); // Más grande para PC
+        studentPanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
 
         JLabel studentLabel = new JLabel("Seleccione su estudiante:");
-        studentLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        studentLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        studentLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño de fuente ajustado
+        studentLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
 
-        studentComboBox = new JComboBox<>();
-        studentComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
-        studentComboBox.setMaximumSize(new Dimension(400, 40));
+        studentComboBox = new JComboBox<>(); // ComboBox para seleccionar estudiante
+        studentComboBox.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        studentComboBox.setMaximumSize(new Dimension(400, 40)); // Más grande para PC
 
         // Agregar estudiantes al combo box
         for (Estudiante estudiante : estudiantes) {
             studentComboBox.addItem(estudiante.getNombre() + " - " + estudiante.getGrado());
         }
 
+        // Agregar componentes al panel de selección de estudiante
         studentPanel.add(studentLabel);
-        studentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        studentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre el label y el combo box
         studentPanel.add(studentComboBox);
 
         // Botón de registro
-        registerButton = new JButton("REGISTRARSE");
-        registerButton.setFont(new Font("Arial", Font.BOLD, 14));
-        registerButton.setBackground(PRIMARY_COLOR);
-        registerButton.setForeground(WHITE_COLOR);
-        registerButton.setFocusPainted(false);
-        registerButton.setBorderPainted(false);
-        registerButton.setMaximumSize(new Dimension(400, 50));
-        registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        registerButton = new JButton("REGISTRARSE"); // Botón para registrar
+        registerButton.setFont(new Font("Arial", Font.BOLD, 16)); // Tamaño de fuente ajustado
+        registerButton.setBackground(PRIMARY_COLOR); // Color de fondo
+        registerButton.setForeground(WHITE_COLOR); // Color del texto
+        registerButton.setFocusPainted(false); // Sin borde al hacer clic
+        registerButton.setBorderPainted(false); // Sin borde
+        registerButton.setMaximumSize(new Dimension(400, 50)); // Más grande para PC
+        registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
+        registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Enlace para cambiar a login
-        switchToLoginButton = new JButton("¿Ya tienes cuenta? Inicia sesión");
-        switchToLoginButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        switchToLoginButton.setForeground(PRIMARY_COLOR);
-        switchToLoginButton.setBorderPainted(false);
-        switchToLoginButton.setContentAreaFilled(false);
-        switchToLoginButton.setFocusPainted(false);
-        switchToLoginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        switchToLoginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        switchToLoginButton = new JButton("¿Ya tienes cuenta? Inicia sesión"); // Botón para cambiar a login
+        switchToLoginButton.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        switchToLoginButton.setForeground(PRIMARY_COLOR); // Color del texto
+        switchToLoginButton.setBorderPainted(false); // Sin borde
+        switchToLoginButton.setContentAreaFilled(false); // Sin fondo
+        switchToLoginButton.setFocusPainted(false); // Sin borde al hacer clic
+        switchToLoginButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
+        switchToLoginButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el botón
 
         // Acción para cambiar al formulario de login
         switchToLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateWelcomePanel(true);
-                cardLayout.show(formPanel, "login");
+                updateWelcomePanel(true); // Actualizar el panel de bienvenida
+                cardLayout.show(formPanel, "login"); // Mostrar el formulario de login
             }
         });
 
@@ -385,9 +503,9 @@ public class AuthApp extends JFrame {
         ActionListener roleListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                studentPanel.setVisible(padreRadio.isSelected());
-                registerPanel.revalidate();
-                registerPanel.repaint();
+                studentPanel.setVisible(padreRadio.isSelected()); // Mostrar el panel de estudiante solo si se selecciona "Padre"
+                registerPanel.revalidate(); // Revalidar el panel de registro
+                registerPanel.repaint(); // Repaint para actualizar la interfaz
             }
         };
 
@@ -396,26 +514,26 @@ public class AuthApp extends JFrame {
         medicoRadio.addActionListener(roleListener);
 
         // Agregar componentes al panel de registro
-        registerPanel.add(Box.createVerticalGlue());
-        registerPanel.add(registerTitle);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        registerPanel.add(namePanel);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        registerPanel.add(emailRegisterPanel);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        registerPanel.add(passwordRegisterPanel);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        registerPanel.add(rolePanel);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        registerPanel.add(studentPanel);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        registerPanel.add(registerButton);
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        registerPanel.add(switchToLoginButton);
-        registerPanel.add(Box.createVerticalGlue());
+        registerPanel.add(Box.createVerticalGlue()); // Espacio flexible
+        registerPanel.add(registerTitle); // Agregar título
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 30))); // Espacio rígido
+        registerPanel.add(namePanel); // Agregar campo de nombre
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
+        registerPanel.add(emailRegisterPanel); // Agregar campo de email
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
+        registerPanel.add(passwordRegisterPanel); // Agregar campo de contraseña
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        registerPanel.add(rolePanel); // Agregar panel de selección de rol
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio rígido
+        registerPanel.add(studentPanel); // Agregar panel de selección de estudiante
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        registerPanel.add(registerButton); // Agregar botón de registro
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
+        registerPanel.add(switchToLoginButton); // Agregar enlace a login
+        registerPanel.add(Box.createVerticalGlue()); // Espacio flexible
 
         // Agregar panel de registro al panel de formularios
-        formPanel.add(registerPanel, "register");
+        formPanel.add(registerPanel, "register"); // Agregar el panel de registro al CardLayout
     }
 
     private void updateWelcomePanel(boolean isLogin) {
@@ -424,33 +542,33 @@ public class AuthApp extends JFrame {
 
         // Panel de bienvenida
         JPanel welcomePanel = new JPanel();
-        welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.Y_AXIS));
-        welcomePanel.setBackground(PRIMARY_COLOR);
-        welcomePanel.setBorder(new EmptyBorder(30, 30, 30, 30));
+        welcomePanel.setLayout(new BoxLayout(welcomePanel, BoxLayout.Y_AXIS)); // Orientación vertical
+        welcomePanel.setBackground(PRIMARY_COLOR); // Establecer el color de fondo
+        welcomePanel.setBorder(new EmptyBorder(30, 30, 30, 30)); // Más padding
 
-        JLabel welcomeTitle = new JLabel(isLogin ? "¡Bienvenido de nuevo!" : "¡Bienvenido!");
-        welcomeTitle.setForeground(WHITE_COLOR);
-        welcomeTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        welcomeTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel welcomeTitle = new JLabel(isLogin ? "¡Bienvenido de nuevo!" : "¡Bienvenido!"); // Título de bienvenida
+        welcomeTitle.setForeground(WHITE_COLOR); // Establecer el color del texto
+        welcomeTitle.setFont(new Font("Arial", Font.BOLD, 24)); // Tamaño de fuente ajustado
+        welcomeTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
         String welcomeMessage = isLogin
                 ? "Para mantenerte conectado con nosotros, inicia sesión con tu información personal"
                 : "Regístrate para formar parte de nuestro sistema de vacunación escolar";
 
-        JLabel welcomeText = new JLabel("<html><div style='text-align: center;'>" + welcomeMessage + "</div></html>");
-        welcomeText.setForeground(WHITE_COLOR);
-        welcomeText.setFont(new Font("Arial", Font.PLAIN, 14));
-        welcomeText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel welcomeText = new JLabel("<html><div style='text-align: center;'>" + welcomeMessage + "</div></html>"); // Mensaje de bienvenida
+        welcomeText.setForeground(WHITE_COLOR); // Establecer el color del texto
+        welcomeText.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
+        welcomeText.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
-        welcomePanel.add(Box.createVerticalGlue());
-        welcomePanel.add(welcomeTitle);
-        welcomePanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        welcomePanel.add(welcomeText);
-        welcomePanel.add(Box.createVerticalGlue());
+        welcomePanel.add(Box.createVerticalGlue()); // Espacio flexible
+        welcomePanel.add(welcomeTitle); // Agregar título
+        welcomePanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        welcomePanel.add(welcomeText); // Agregar texto de bienvenida
+        welcomePanel.add(Box.createVerticalGlue()); // Espacio flexible
 
-        leftPanel.add(welcomePanel, BorderLayout.CENTER);
-        leftPanel.revalidate();
-        leftPanel.repaint();
+        leftPanel.add(welcomePanel, BorderLayout.CENTER); // Agregar el panel de bienvenida al panel izquierdo
+        leftPanel.revalidate(); // Revalidar el panel
+        leftPanel.repaint(); // Repaint para actualizar la interfaz
     }
 
     public static void main(String[] args) {
@@ -460,7 +578,6 @@ public class AuthApp extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -475,26 +592,26 @@ public class AuthApp extends JFrame {
 
     // Clase para representar a un estudiante
     private class Estudiante {
-        private String id;
-        private String nombre;
-        private String grado;
+        private String id; // ID del estudiante
+        private String nombre; // Nombre del estudiante
+        private String grado; // Grado del estudiante
 
         public Estudiante(String id, String nombre, String grado) {
-            this.id = id;
-            this.nombre = nombre;
-            this.grado = grado;
+            this.id = id; // Inicializa el ID
+            this.nombre = nombre; // Inicializa el nombre
+            this.grado = grado; // Inicializa el grado
         }
 
         public String getId() {
-            return id;
+            return id; // Retorna el ID
         }
 
         public String getNombre() {
-            return nombre;
+            return nombre; // Retorna el nombre
         }
 
         public String getGrado() {
-            return grado;
+            return grado; // Retorna el grado
         }
     }
 }
