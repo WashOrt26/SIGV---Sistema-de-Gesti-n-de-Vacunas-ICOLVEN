@@ -616,5 +616,6 @@ public class AuthApp extends JFrame {
         public String getGrado() {
             return grado; // Retorna el grado
         }
+        //Se logro
     }
 }
