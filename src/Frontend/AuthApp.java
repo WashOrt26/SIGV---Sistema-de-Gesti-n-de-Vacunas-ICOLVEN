@@ -409,11 +409,11 @@ public class AuthApp extends JFrame {
         rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS)); // Orientación vertical
         rolePanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
         rolePanel.setMaximumSize(new Dimension(400, 150)); // Más grande para PC
-        rolePanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
+        rolePanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
         JLabel roleLabel = new JLabel("Seleccione su rol:");
         roleLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño de fuente ajustado
-        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
+        roleLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
         roleGroup = new ButtonGroup(); // Grupo para los botones de radio
 
@@ -449,15 +449,16 @@ public class AuthApp extends JFrame {
         studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS)); // Orientación vertical
         studentPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
         studentPanel.setMaximumSize(new Dimension(400, 80)); // Más grande para PC
-        studentPanel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
+        studentPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
         JLabel studentLabel = new JLabel("Seleccione su estudiante:");
         studentLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño de fuente ajustado
-        studentLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
+        studentLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
         studentComboBox = new JComboBox<>(); // ComboBox para seleccionar estudiante
         studentComboBox.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
         studentComboBox.setMaximumSize(new Dimension(400, 40)); // Más grande para PC
+        studentComboBox.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
         // Agregar estudiantes al combo box
         for (Estudiante estudiante : estudiantes) {
@@ -523,7 +524,9 @@ public class AuthApp extends JFrame {
         registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
         registerPanel.add(passwordRegisterPanel); // Agregar campo de contraseña
         registerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
+        registerPanel.add(Box.createHorizontalGlue()); // Espacio flexible a la izquierda
         registerPanel.add(rolePanel); // Agregar panel de selección de rol
+        registerPanel.add(Box.createHorizontalGlue()); // Espacio flexible a la derecha
         registerPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio rígido
         registerPanel.add(studentPanel); // Agregar panel de selección de estudiante
         registerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
