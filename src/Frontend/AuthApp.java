@@ -1,5 +1,5 @@
 package Frontend;
-
+///  Los comentarios de la base de datos se ven asi verdes :D
 import javax.swing.*; // Importa componentes gráficos
 import javax.swing.border.EmptyBorder; // Para manejar bordes vacíos
 import java.awt.*; // Para manejar colores y diseño
@@ -11,6 +11,11 @@ import java.util.ArrayList; // Para almacenar datos en una lista
 import java.util.List; // Para almacenar datos en una lista
 
 public class AuthApp extends JFrame {
+
+    /// ======================================================
+    /// Configurar credenciales de la base de datos pues si necesitas tipo un local host o algo asi
+    /// ======================================================
+
     // Colores personalizados
     private static final Color PRIMARY_COLOR = new Color(69, 153, 126); // Color principal
     private static final Color WHITE_COLOR = new Color(255, 255, 255); // Color blanco
@@ -42,10 +47,13 @@ public class AuthApp extends JFrame {
     private JButton registerButton; // Botón para registrar
     private JButton switchToLoginButton; // Botón para cambiar a login
 
-    // Datos de ejemplo (simulando una base de datos)
+    /// Datos de ejemplo (simulando una base de datos) Tambien deberias borrar la lista porque aja base de dato s
     private List<Estudiante> estudiantes;
 
     public AuthApp() {
+        /// Elimina el setupSampleData porque es el de los datos de los ejemplo
+        /// Y pues pudes poner aca  el metodo nuevo para la base de datos de estudiantes
+
         setupSampleData(); // Configura datos de ejemplo
 
         // Configuración de la ventana principal
@@ -70,8 +78,9 @@ public class AuthApp extends JFrame {
         cardLayout.show(formPanel, "login"); // Mostrar el formulario de login
     }
 
+    /// Borra todo este metodo  setupSampleData porque pues si hay base de datos ya no sirve
     private void setupSampleData() {
-        // Simulación de datos de estudiantes
+        ///Simulación de datos de estudiantes
         estudiantes = new ArrayList<>();
         estudiantes.add(new Estudiante("1", "Juan Pérez", "1° A"));
         estudiantes.add(new Estudiante("2", "María García", "2° B"));
@@ -144,7 +153,7 @@ public class AuthApp extends JFrame {
         emailPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
         JLabel emailIcon = new JLabel("✉"); // Icono de email
-        emailIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        emailIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18)); // Tamaño de fuente
         emailIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
         emailIcon.setForeground(Color.GRAY); // Color del icono
 
@@ -184,7 +193,7 @@ public class AuthApp extends JFrame {
         passwordPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
         JLabel passwordIcon = new JLabel("🔒"); // Icono de contraseña
-        passwordIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        passwordIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18)); // Tamaño de fuente
         passwordIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
         passwordIcon.setForeground(Color.GRAY); // Color del icono
 
@@ -221,7 +230,7 @@ public class AuthApp extends JFrame {
         passwordPanel.add(passwordIcon, BorderLayout.WEST); // Agregar icono al panel
         passwordPanel.add(passwordLoginField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
-        // Botón de login
+        /// Botón de login
         loginButton = new JButton("INICIAR SESIÓN"); // Botón para iniciar sesión
         loginButton.setFont(new Font("Arial", Font.BOLD, 16)); // Tamaño de fuente ajustado
         loginButton.setBackground(PRIMARY_COLOR); // Color de fondo
@@ -231,6 +240,22 @@ public class AuthApp extends JFrame {
         loginButton.setMaximumSize(new Dimension(400, 50)); // Más grande para PC
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el botón
+
+        /// ======================================================
+        ///AQUÍ VA LA CONEXIÓN CON LA BASE DE DATOS PARA LOGIN
+        /// PASOS:
+        /// 1. Validar campos no estén vacíos
+        /// 2. Obtener email y password
+        /// 3. Ejecutar consulta SQL para validar credenciales
+        /// 4. Si es válido, abrir siguiente ventana
+        /// 5. Si no, mostrar mensaje de error
+        /// ======================================================
+        /// loginButton.addActionListener(new ActionListener() {
+        ///     @Override
+        ///     public void actionPerformed(ActionEvent e) {
+        ///         // Lógica de validación con BD aquí <--
+        ///     }
+        /// }); Puedes hacerlo asi no se :D
 
         // Enlace para cambiar a registro
         switchToRegisterButton = new JButton("¿No tienes cuenta? Regístrate"); // Botón para cambiar a registro
@@ -287,7 +312,7 @@ public class AuthApp extends JFrame {
         namePanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
         JLabel nameIcon = new JLabel("👤"); // Icono de nombre
-        nameIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        nameIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));// Tamaño de fuente
         nameIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
         nameIcon.setForeground(Color.GRAY); // Color del icono
 
@@ -327,7 +352,7 @@ public class AuthApp extends JFrame {
         emailRegisterPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
         JLabel emailRegisterIcon = new JLabel("✉"); // Icono de email
-        emailRegisterIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        emailRegisterIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));// Tamaño de fuente
         emailRegisterIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
         emailRegisterIcon.setForeground(Color.GRAY); // Color del icono
 
@@ -367,7 +392,7 @@ public class AuthApp extends JFrame {
         passwordRegisterPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
 
         JLabel passwordRegisterIcon = new JLabel("🔒"); // Icono de contraseña
-        passwordRegisterIcon.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente
+        passwordRegisterIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));//Tamaño de fuente
         passwordRegisterIcon.setBorder(new EmptyBorder(0, 5, 0, 10)); // Espaciado interno
         passwordRegisterIcon.setForeground(Color.GRAY); // Color del icono
 
@@ -455,12 +480,17 @@ public class AuthApp extends JFrame {
         studentLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño de fuente ajustado
         studentLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
+        /// Combo Box
         studentComboBox = new JComboBox<>(); // ComboBox para seleccionar estudiante
         studentComboBox.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
         studentComboBox.setMaximumSize(new Dimension(400, 40)); // Más grande para PC
         studentComboBox.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
+        /// ======================================================
+        /// AQUÍ DEBES CARGAR LOS ESTUDIANTES DESDE LA BD
+        /// (Esto reemplaza los datos de ejemplo)
+        /// ======================================================
 
-        // Agregar estudiantes al combo box
+        /// Agregar estudiantes al combo box
         for (Estudiante estudiante : estudiantes) {
             studentComboBox.addItem(estudiante.getNombre() + " - " + estudiante.getGrado());
         }
@@ -480,7 +510,21 @@ public class AuthApp extends JFrame {
         registerButton.setMaximumSize(new Dimension(400, 50)); // Más grande para PC
         registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
         registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        /// ======================================================
+        /// AQUÍ VA LA CONEXIÓN CON LA BASE DE DATOS PARA REGISTRO
+        /// PASOS:
+        /// 1. Validar campos obligatorios
+        /// 2. Obtener nombre, email, password y rol
+        /// 3. Si es padre, obtener ID del estudiante seleccionado
+        /// 4. Ejecutar INSERT en la tabla usuarios
+        /// 5. Mostrar confirmación o error
+        /// ======================================================
+        /// registerButton.addActionListener(new ActionListener() {
+        ///     @Override
+        ///     public void actionPerformed(ActionEvent e) {
+        ///         // Lógica de inserción en BD aquí <--
+        ///     }
+        /// });Puedes hacerlo asi no se :D
         // Enlace para cambiar a login
         switchToLoginButton = new JButton("¿Ya tienes cuenta? Inicia sesión"); // Botón para cambiar a login
         switchToLoginButton.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
@@ -593,7 +637,7 @@ public class AuthApp extends JFrame {
         });
     }
 
-    // Clase para representar a un estudiante
+    /// Clase para representar a un estudiante,
     private class Estudiante {
         private String id; // ID del estudiante
         private String nombre; // Nombre del estudiante
@@ -616,6 +660,19 @@ public class AuthApp extends JFrame {
         public String getGrado() {
             return grado; // Retorna el grado
         }
-        //Se logro
+        /// ======================================================
+        /// AQUÍ VAN LOS MÉTODOS DE CONEXIÓN A LA BASE DE DATOS
+        /// 1. validarCredencialesBD() - Para login
+        /// 2. insertarUsuarioEnBD() - Para registro
+        /// ======================================================
+        ///private boolean validarCredencialesBD(String email, String password) {
+        ///     // Tu conexión JDBC aquí
+        ///     return false;
+        /// }
+        ///
+        /// private boolean insertarUsuarioEnBD(String nombre, String email, String password, String rol, String estudianteId) {
+        ///     // Tu INSERT SQL aquí
+        ///     return false;
+        /// } Puedes hacerlo asi no se
     }
 }
