@@ -7,6 +7,8 @@ import org.sigv.config.HibernateUtil;
 import org.sigv.model.TipoUsuario;
 import org.sigv.model.Usuario;
 
+import java.util.List;
+
 public class UsuarioRepository {
 
     // Método para guardar un usuario en la BD
@@ -34,6 +36,16 @@ public class UsuarioRepository {
             query.setParameter("contrasena", contrasena);
 
             return query.uniqueResult(); // Devuelve el usuario o null si no existe
+        }
+    }
+    // Método para listar estudiantes
+    public List<Usuario> listarEstudiantes() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM Usuario u WHERE u.tipoUsuario = :tipo";
+            Query<Usuario> query = session.createQuery(hql, Usuario.class);
+            query.setParameter("tipo", TipoUsuario.estudiante);
+
+            return query.getResultList(); // Devuelve el usuario o null si no existe
         }
     }
 }
