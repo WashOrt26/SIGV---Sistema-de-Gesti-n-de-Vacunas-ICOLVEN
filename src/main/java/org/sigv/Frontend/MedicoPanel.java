@@ -809,4 +809,3 @@ public class MedicoPanel extends JFrame {
         });
     }
 }
-
