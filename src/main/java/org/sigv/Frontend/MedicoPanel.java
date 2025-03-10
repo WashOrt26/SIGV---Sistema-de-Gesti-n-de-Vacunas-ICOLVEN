@@ -1,4 +1,4 @@
-package Frontend;
+package org.sigv.frontend;
 
 import javax.swing.*; // Importa clases de Swing para crear GUIs.
 import javax.swing.border.EmptyBorder; // Importa EmptyBorder para bordes vacíos.
