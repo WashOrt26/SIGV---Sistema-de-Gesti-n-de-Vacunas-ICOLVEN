@@ -1,4 +1,4 @@
-package Frontend;
+package org.sigv.frontend;
 
 import javax.swing.*; // Importa componentes gráficos
 import javax.swing.border.EmptyBorder; // Para manejar bordes vacíos

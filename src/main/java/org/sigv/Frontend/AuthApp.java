@@ -1,5 +1,8 @@
-package Frontend;
+package org.sigv.frontend;
 ///  Los comentarios de la base de datos se ven asi verdes :D
+import org.sigv.model.Usuario;
+import org.sigv.repository.UsuarioRepository;
+
 import javax.swing.*; // Importa componentes gráficos
 import javax.swing.border.EmptyBorder; // Para manejar bordes vacíos
 import java.awt.*; // Para manejar colores y diseño
@@ -11,6 +14,12 @@ import java.util.ArrayList; // Para almacenar datos en una lista
 import java.util.List; // Para almacenar datos en una lista
 
 public class AuthApp extends JFrame {
+
+    /*
+     * Se instancia la clase encargada de las operaciones sobre
+     * la base de datos
+     */
+    UsuarioRepository usuarioRepository = new UsuarioRepository();
 
     /// ======================================================
     /// Configurar credenciales de la base de datos pues si necesitas tipo un local host o algo asi
@@ -250,12 +259,35 @@ public class AuthApp extends JFrame {
         /// 4. Si es válido, abrir siguiente ventana
         /// 5. Si no, mostrar mensaje de error
         /// ======================================================
-        /// loginButton.addActionListener(new ActionListener() {
-        ///     @Override
-        ///     public void actionPerformed(ActionEvent e) {
-        ///         // Lógica de validación con BD aquí <--
-        ///     }
-        /// }); Puedes hacerlo asi no se :D
+        loginButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               boolean pasoValidacion = true;
+               String email = emailLoginField.getText();
+               String password = new String(passwordLoginField.getPassword());
+               if (email.isEmpty()) {
+                   emailLoginField.setText("Correo electrónico"); // Restablecer el placeholder
+                   emailLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                   pasoValidacion = false;
+               }
+               if (password.isEmpty()) {
+                   passwordLoginField.setText("Contraseña"); // Restablecer el placeholder
+                   passwordLoginField.setEchoChar((char) 0); // Desactivar caracteres de contraseña
+                   passwordLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                   pasoValidacion = false;
+               }
+               if (pasoValidacion) {
+                   Usuario usuarioConsultado = usuarioRepository.buscarUsuario(email, password);
+                   if (usuarioConsultado == null) {
+                       System.out.println("Muestra mensaje de error");
+                   } else {
+                       System.out.println("pasa a la siguiente ventana");
+                   }
+
+               }
+
+           }
+        });
 
         // Enlace para cambiar a registro
         switchToRegisterButton = new JButton("¿No tienes cuenta? Regístrate"); // Botón para cambiar a registro
@@ -638,7 +670,7 @@ public class AuthApp extends JFrame {
     }
 
     /// Clase para representar a un estudiante,
-    private class Estudiante {
+    public class Estudiante {
         private String id; // ID del estudiante
         private String nombre; // Nombre del estudiante
         private String grado; // Grado del estudiante
