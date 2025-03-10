@@ -275,11 +275,9 @@ public class AuthApp extends JFrame {
                if (pasoValidacion) {
                    Usuario usuarioConsultado = usuarioRepository.buscarUsuario(email, password);
                    if (usuarioConsultado == null) {
-                       JOptionPane.showMessageDialog(AuthApp.this, "Credenciales incorrectas. Intente nuevamente.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+                       System.out.println("Muestra mensaje de error");
                    } else {
-                       org.sigv.frontend.MedicoPanel medicoPanel = new org.sigv.frontend.MedicoPanel(); // Crear instancia de MedicoPanel
-                       medicoPanel.setVisible(true); // Hacer visible la ventana de MedicoPanel
-                       dispose();
+                       System.out.println("pasa a la siguiente ventana");
                    }
 
                }
