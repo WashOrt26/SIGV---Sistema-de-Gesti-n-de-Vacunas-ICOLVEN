@@ -57,7 +57,7 @@ public class AuthApp extends JFrame {
     private JButton switchToLoginButton; // Botón para cambiar a login
 
     /// Datos de ejemplo (simulando una base de datos) Tambien deberias borrar la lista porque aja base de dato s
-    private List<Estudiante> estudiantes;
+    private List<Usuario> estudiantes;
 
     public AuthApp() {
         /// Elimina el setupSampleData porque es el de los datos de los ejemplo
@@ -91,11 +91,7 @@ public class AuthApp extends JFrame {
     private void setupSampleData() {
         ///Simulación de datos de estudiantes
         estudiantes = new ArrayList<>();
-        estudiantes.add(new Estudiante("1", "Juan Pérez", "1° A"));
-        estudiantes.add(new Estudiante("2", "María García", "2° B"));
-        estudiantes.add(new Estudiante("3", "Carlos López", "3° C"));
-        estudiantes.add(new Estudiante("4", "Ana Rodríguez", "1° B"));
-        estudiantes.add(new Estudiante("5", "Pedro Sánchez", "2° A"));
+        estudiantes.addAll(usuarioRepository.listarEstudiantes());
     }
 
     private void setupPanels() {
@@ -523,8 +519,8 @@ public class AuthApp extends JFrame {
         /// ======================================================
 
         /// Agregar estudiantes al combo box
-        for (Estudiante estudiante : estudiantes) {
-            studentComboBox.addItem(estudiante.getNombre() + " - " + estudiante.getGrado());
+        for (Usuario estudiante : estudiantes) {
+            studentComboBox.addItem(estudiante.getNombre());
         }
 
         // Agregar componentes al panel de selección de estudiante
@@ -667,44 +663,5 @@ public class AuthApp extends JFrame {
                 }
             }
         });
-    }
-
-    /// Clase para representar a un estudiante,
-    public class Estudiante {
-        private String id; // ID del estudiante
-        private String nombre; // Nombre del estudiante
-        private String grado; // Grado del estudiante
-
-        public Estudiante(String id, String nombre, String grado) {
-            this.id = id; // Inicializa el ID
-            this.nombre = nombre; // Inicializa el nombre
-            this.grado = grado; // Inicializa el grado
-        }
-
-        public String getId() {
-            return id; // Retorna el ID
-        }
-
-        public String getNombre() {
-            return nombre; // Retorna el nombre
-        }
-
-        public String getGrado() {
-            return grado; // Retorna el grado
-        }
-        /// ======================================================
-        /// AQUÍ VAN LOS MÉTODOS DE CONEXIÓN A LA BASE DE DATOS
-        /// 1. validarCredencialesBD() - Para login
-        /// 2. insertarUsuarioEnBD() - Para registro
-        /// ======================================================
-        ///private boolean validarCredencialesBD(String email, String password) {
-        ///     // Tu conexión JDBC aquí
-        ///     return false;
-        /// }
-        ///
-        /// private boolean insertarUsuarioEnBD(String nombre, String email, String password, String rol, String estudianteId) {
-        ///     // Tu INSERT SQL aquí
-        ///     return false;
-        /// } Puedes hacerlo asi no se
     }
 }
