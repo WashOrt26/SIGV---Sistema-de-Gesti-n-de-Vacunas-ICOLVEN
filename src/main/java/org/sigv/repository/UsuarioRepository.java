@@ -38,7 +38,7 @@ public class UsuarioRepository {
             return query.uniqueResult(); // Devuelve el usuario o null si no existe
         }
     }
-    // Método para consultar si un usuario existe
+    // Método para listar estudiantes
     public List<Usuario> listarEstudiantes() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Usuario u WHERE u.tipoUsuario = :tipo";
