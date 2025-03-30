@@ -92,7 +92,7 @@ public class MedicoPanel extends JFrame {
         userIcon.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR, 1)); // Borde
 
         // Nombre del usuario
-        JLabel userName = new JLabel("Dr. González"); // Crear etiqueta para el nombre
+        JLabel userName = new JLabel(""); // Crear etiqueta para el nombre
         userName.setFont(new Font("Arial", Font.BOLD, 16)); // Establecer fuente
         userName.setBorder(new EmptyBorder(0, 10, 0, 30)); // Espaciado
 
@@ -186,7 +186,7 @@ public class MedicoPanel extends JFrame {
         JLabel vacunaLabel = new JLabel("Tipo de Vacuna");
         vacunaLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        String[] vacunas = {"Seleccionar vacuna", "Triple Viral", "Influenza", "Hepatitis B", "DPT", "BCG"};
+        String[] vacunas = {"Seleccionar vacuna", "Triple Viral", "Influenza", "Hepatitis B", "DPT", "BCG","VPH","COVID-19"};
         JComboBox<String> vacunaCombo = new JComboBox<>(vacunas);
         vacunaCombo.setFont(new Font("Arial", Font.PLAIN, 16));
         vacunaCombo.setPreferredSize(new Dimension(0, 40));
@@ -202,6 +202,8 @@ public class MedicoPanel extends JFrame {
         row1_5.setBackground(WHITE_COLOR);
         row1_5.setMaximumSize(new Dimension(1800, 80));
 
+        //Ya funciona por medio de la selección de eestudainte
+        //Conectar base de datos
         JLabel vacunasEstudianteLabel = new JLabel("Vacunas ya aplicadas al estudiante");
         vacunasEstudianteLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -210,7 +212,7 @@ public class MedicoPanel extends JFrame {
         vacunasEstudianteField.setEditable(false);
         vacunasEstudianteField.setBackground(LIGHT_GRAY);
 
-        // Actualizar el campo de vacunas cuando se selecciona un estudiante
+        /// Actualizar el campo de vacunas cuando se selecciona un estudiante
         estudianteCombo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -248,6 +250,7 @@ public class MedicoPanel extends JFrame {
         row2.setMaximumSize(new Dimension(1800, 80));
 
         // Panel de fecha
+        //Falta que el panel funcione
         JPanel fechaPanel = new JPanel(new BorderLayout(0, 8));
         fechaPanel.setBackground(WHITE_COLOR);
 
@@ -262,9 +265,9 @@ public class MedicoPanel extends JFrame {
         fechaField.setEditable(false);
         fechaField.setPreferredSize(new Dimension(0, 40));
 
-        // Botón de calendario con icono
+        // Botón de calendario con icono y toca ponerle funcionalidad
         JButton fechaButton = new JButton("📅");
-        fechaButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        fechaButton.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 12));
         fechaButton.setFocusPainted(false);
         fechaButton.setPreferredSize(new Dimension(50, 40));
 
@@ -273,7 +276,7 @@ public class MedicoPanel extends JFrame {
 
         fechaPanel.add(fechaLabel, BorderLayout.NORTH);
         fechaPanel.add(fechaPickerPanel, BorderLayout.CENTER);
-
+        /// Conectar base de datos
         // Panel de lote
         JPanel lotePanel = new JPanel(new BorderLayout(0, 8));
         lotePanel.setBackground(WHITE_COLOR);
@@ -366,9 +369,10 @@ public class MedicoPanel extends JFrame {
         proxField.setForeground(Color.GRAY);
         proxField.setPreferredSize(new Dimension(0, 40));
 
+        //Falta funcionalidad de boton
         // Botón de calendario con icono
         JButton proxButton = new JButton("📅");
-        proxButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        proxButton.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 12));
         proxButton.setFocusPainted(false);
         proxButton.setPreferredSize(new Dimension(50, 40));
 
@@ -408,7 +412,7 @@ public class MedicoPanel extends JFrame {
                 registrarBtn.setBackground(PRIMARY_COLOR);
             }
         });
-
+        /// Se supone que aca va base de datos para que al registrar una nueva vacuna se inserte en la base de datos y aja @Daniel haz tu magia
         // Acción para el botón de registrar
         registrarBtn.addActionListener(new ActionListener() {
             @Override
@@ -427,13 +431,13 @@ public class MedicoPanel extends JFrame {
                     return;
                 }
 
-                // Aquí iría la lógica para registrar la vacuna en la base de datos
+                /// Aquí iría la lógica para registrar la vacuna en la base de datos eso creo
                 JOptionPane.showMessageDialog(MedicoPanel.this,
                         "Vacuna registrada exitosamente.",
                         "Registro exitoso",
                         JOptionPane.INFORMATION_MESSAGE);
 
-                // Limpiar el formulario
+                // Limpiar el formulario funciona
                 estudianteCombo.setSelectedIndex(0);
                 vacunaCombo.setSelectedIndex(0);
                 dosisCombo.setSelectedIndex(0);
@@ -445,7 +449,7 @@ public class MedicoPanel extends JFrame {
                 vacunasEstudianteField.setText("Seleccione un estudiante para ver sus vacunas");
             }
         });
-
+        //Funciona bien
         // Acción para el botón de limpiar
         limpiarBtn.addActionListener(new ActionListener() {
             @Override
@@ -516,9 +520,10 @@ public class MedicoPanel extends JFrame {
 
         // Icono de búsqueda
         JLabel searchIcon = new JLabel("  🔍");
-        searchIcon.setFont(new Font("Arial", Font.PLAIN, 16));
+        searchIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
         searchIcon.setPreferredSize(new Dimension(40, 45));
 
+        //Falta que esto funcione tipo place holder
         JTextField searchField = new JTextField("Buscar estudiante...");
         searchField.setFont(new Font("Arial", Font.PLAIN, 16));
         searchField.setForeground(Color.GRAY);
@@ -560,7 +565,7 @@ public class MedicoPanel extends JFrame {
         });
 
         JButton alDiaBtn = new JButton("✓ Al día");
-        alDiaBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        alDiaBtn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
         alDiaBtn.setForeground(GREEN_TEXT);
         alDiaBtn.setBackground(WHITE_COLOR);
         alDiaBtn.setFocusPainted(false);
@@ -568,7 +573,7 @@ public class MedicoPanel extends JFrame {
         alDiaBtn.setPreferredSize(new Dimension(120, 45));
 
         JButton pendientesBtn = new JButton("⚠ Pendientes");
-        pendientesBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        pendientesBtn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
         pendientesBtn.setForeground(RED_TEXT);
         pendientesBtn.setBackground(WHITE_COLOR);
         pendientesBtn.setFocusPainted(false);
@@ -609,14 +614,14 @@ public class MedicoPanel extends JFrame {
                 return false; // Ninguna celda es editable
             }
         };
-
+        /// Tabla de estudiante
         JTable studentsTable = new JTable(tableModel);
         studentsTable.setFont(new Font("Arial", Font.PLAIN, 16));
         studentsTable.setRowHeight(40);
         studentsTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
         studentsTable.getTableHeader().setBackground(LIGHT_GRAY);
         studentsTable.getTableHeader().setPreferredSize(new Dimension(0, 50));
-        studentsTable.setSelectionBackground(new Color(232, 240, 254));
+        studentsTable.setSelectionBackground(new Color(93, 131, 143));
 
         // Renderizador personalizado para la columna de estado
         studentsTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
@@ -702,7 +707,7 @@ public class MedicoPanel extends JFrame {
 
                     contentPanel.add(titleLabel);
                     contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-
+                    /// Aca esta el cuadro que se desplegla cuando uno le da en detalles suegun el estudiante
                     if (vacunas != null && vacunas.length > 0) {
                         for (String vacuna : vacunas) {
                             JLabel vacunaLabel = new JLabel("• " + vacuna);
@@ -751,7 +756,7 @@ public class MedicoPanel extends JFrame {
         estudiantesPanel.add(searchCard, BorderLayout.NORTH);
         estudiantesPanel.add(tableCard, BorderLayout.CENTER);
 
-        // Agregar acciones a los botones de filtro
+        /// Filtros que funcionan
         alDiaBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

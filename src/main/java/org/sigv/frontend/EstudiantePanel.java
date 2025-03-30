@@ -62,9 +62,10 @@ public class EstudiantePanel extends JFrame {
     }
 
     private void setupSampleData() {
-        // Datos del estudiante
+        /// Conecatddo con base de datos
         estudiante = new Estudiante("EST001", "Juan Pérez", "1° A", "Al día");
 
+        /// Deberia conectarse con aja las vacuans
         // Historial de vacunas
         historialVacunas = new Vacuna[] {
                 new Vacuna("2024-02-01", "Triple Viral", "Dr. González", "Centro Médico Escolar", "Completada"),
@@ -142,7 +143,6 @@ public class EstudiantePanel extends JFrame {
 
         // Información del estudiante
         JPanel namePanel = createInfoField("Nombre", estudiante.getNombre());
-        JPanel gradePanel = createInfoField("Grado", estudiante.getGrado());
         JPanel idPanel = createInfoField("ID Estudiante", estudiante.getId());
 
         // Estado de vacunación
@@ -176,7 +176,6 @@ public class EstudiantePanel extends JFrame {
 
         // Agregar paneles a la información
         infoContent.add(namePanel);
-        infoContent.add(gradePanel);
         infoContent.add(idPanel);
         infoContent.add(statusPanel);
 
@@ -364,7 +363,7 @@ public class EstudiantePanel extends JFrame {
         });
     }
 
-    // Clase para representar a un estudiante
+    /// Cuando haya base de datos esto deberia borrarse
     private class Estudiante {
         private String id;
         private String nombre;
