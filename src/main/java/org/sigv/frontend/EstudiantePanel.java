@@ -28,6 +28,7 @@ public class EstudiantePanel extends JFrame {
     private JPanel studentInfoPanel;
     private JPanel alertsPanel;
     private JPanel historyPanel;
+    private JPanel footerPanel;
 
     // Datos de ejemplo
     private Estudiante estudiante;
@@ -55,10 +56,12 @@ public class EstudiantePanel extends JFrame {
         // Configurar paneles
         setupHeaderPanel();
         setupMainPanel();
+        setupFooterPanel();
 
         // Agregar paneles al contenedor principal
         contentPane.add(headerPanel, BorderLayout.NORTH);
         contentPane.add(mainPanel, BorderLayout.CENTER);
+        contentPane.add(footerPanel, BorderLayout.SOUTH);
     }
 
     private void setupSampleData() {
@@ -341,6 +344,29 @@ public class EstudiantePanel extends JFrame {
         // Agregar componentes al panel de historial
         historyPanel.add(titlePanel, BorderLayout.NORTH);
         historyPanel.add(tableScrollPane, BorderLayout.CENTER);
+    }
+
+    private void setupFooterPanel() {
+        footerPanel = new JPanel();
+        footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        footerPanel.setBackground(WHITE_COLOR);
+        footerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, LIGHT_GRAY));
+
+        JButton logoutButton = new JButton("Cerrar Sesión");
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 14));
+        logoutButton.setBackground(PRIMARY_COLOR);
+        logoutButton.setForeground(WHITE_COLOR);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setBorderPainted(false);
+        logoutButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        logoutButton.setPreferredSize(new Dimension(150, 35));
+
+        logoutButton.addActionListener(e -> {
+            dispose();
+            new AuthApp().setVisible(true);
+        });
+
+        footerPanel.add(logoutButton);
     }
 
     public static void main(String[] args) {

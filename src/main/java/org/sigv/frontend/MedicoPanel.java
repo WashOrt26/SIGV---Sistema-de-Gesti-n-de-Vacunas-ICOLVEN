@@ -31,6 +31,7 @@ public class MedicoPanel extends JFrame {
     private JTabbedPane tabbedPane;
     private JPanel registroVacunaPanel;
     private JPanel estudiantesPanel;
+    private JPanel footerPanel; // Nuevo panel para el footer
 
     /// Datos de ejemplo
     private String[][] studentData = {
@@ -115,10 +116,24 @@ public class MedicoPanel extends JFrame {
         // Configurar paneles
         setupRegistroVacunaPanel(); // Configurar panel para registrar vacunas
         setupEstudiantesPanel(); // Configurar panel para mostrar estudiantes
+        setupFooterPanel(); // Configurar panel de pie de página
 
         // Agregar paneles a las pestañas
         tabbedPane.addTab("Registrar Vacuna", registroVacunaPanel); // Pestaña para registrar vacunas
         tabbedPane.addTab("Estudiantes", estudiantesPanel); // Pestaña para mostrar estudiantes
+    }
+
+    private void setupPanels() {
+        // Panel principal con pestañas
+        tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 14));
+        tabbedPane.setBackground(WHITE_COLOR);
+        tabbedPane.setForeground(PRIMARY_COLOR);
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Agregar pestañas
+        tabbedPane.addTab("Registro de Vacunas", registroVacunaPanel);
+        tabbedPane.addTab("Estudiantes", estudiantesPanel);
     }
 
     /// Aqui estan los correos y las vacunas de cada estudiante, no se como inicializas eso
@@ -955,6 +970,30 @@ public class MedicoPanel extends JFrame {
         public void setTodayButtonVisible(boolean visible) {
             todayButton.setVisible(visible);
         }
+    }
+
+    private void setupFooterPanel() {
+        footerPanel = new JPanel();
+        footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        footerPanel.setBackground(WHITE_COLOR);
+        footerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, LIGHT_GRAY));
+
+        JButton logoutButton = new JButton("Cerrar Sesión");
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 14));
+        logoutButton.setBackground(PRIMARY_COLOR);
+        logoutButton.setForeground(WHITE_COLOR);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setBorderPainted(false);
+        logoutButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        logoutButton.setPreferredSize(new Dimension(150, 35));
+
+        logoutButton.addActionListener(e -> {
+            dispose();
+            new AuthApp().setVisible(true);
+        });
+
+        footerPanel.add(logoutButton);
+        contentPane.add(footerPanel, BorderLayout.SOUTH);
     }
 
     public static void main(String[] args) {
