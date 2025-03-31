@@ -1,5 +1,10 @@
 package org.sigv.frontend;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.sigv.config.HibernateUtil;
+import org.sigv.model.Usuario;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -7,6 +12,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class EstudiantePanel extends JFrame {
     // Colores personalizados
@@ -30,13 +36,14 @@ public class EstudiantePanel extends JFrame {
     private JPanel historyPanel;
     private JPanel footerPanel;
 
-    // Datos de ejemplo
-    private Estudiante estudiante;
-    private Vacuna[] historialVacunas;
+    // Datos del estudiante
+    private Usuario estudiante;
+    private String grado;
+    private String estado;
 
     public EstudiantePanel() {
-        // Inicializar datos de ejemplo
-        setupSampleData();
+        // Obtener datos del estudiante desde la base de datos
+        setupStudentData();
 
         // Configuración de la ventana principal para PC
         setTitle("Panel de Estudiante - Sistema de Vacunación");
@@ -64,18 +71,36 @@ public class EstudiantePanel extends JFrame {
         contentPane.add(footerPanel, BorderLayout.SOUTH);
     }
 
-    private void setupSampleData() {
-        /// Conecatddo con base de datos
-        estudiante = new Estudiante("EST001", "Juan Pérez", "1° A", "Al día");
-
-        /// Deberia conectarse con aja las vacuans
-        // Historial de vacunas
-        historialVacunas = new Vacuna[] {
-                new Vacuna("2024-02-01", "Triple Viral", "Dr. González", "Centro Médico Escolar", "Completada"),
-                new Vacuna("2023-11-15", "Hepatitis B", "Dra. Rodríguez", "Hospital Central", "Completada"),
-                new Vacuna("2023-08-20", "Influenza", "Dr. Martínez", "Centro de Salud", "Completada"),
-                new Vacuna("2024-08-01", "Influenza", "Pendiente", "Por definir", "Pendiente")
-        };
+    private void setupStudentData() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // Obtener el usuario actual (estudiante)
+            String hql = "FROM Usuario u WHERE u.tipoUsuario = 'estudiante'";
+            Query<Usuario> query = session.createQuery(hql, Usuario.class);
+            List<Usuario> estudiantes = query.getResultList();
+            
+            if (!estudiantes.isEmpty()) {
+                estudiante = estudiantes.get(0); // Tomar el primer estudiante por ahora
+                
+                // Obtener información adicional del estudiante
+                String sql = "SELECT e.grado, e.estado_estudiante FROM estudiante e WHERE e.correo = :correo";
+                Query<Object[]> queryEstudiante = session.createNativeQuery(sql);
+                queryEstudiante.setParameter("correo", estudiante.getUsuario());
+                Object[] result = queryEstudiante.uniqueResult();
+                
+                if (result != null) {
+                    grado = (String) result[0];
+                    estado = (String) result[1];
+                } else {
+                    grado = "No especificado";
+                    estado = "Pendiente";
+                }
+            } else {
+                throw new RuntimeException("No se encontró información del estudiante");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al obtener datos del estudiante: " + e.getMessage());
+        }
     }
 
     private void setupHeaderPanel() {
@@ -146,7 +171,7 @@ public class EstudiantePanel extends JFrame {
 
         // Información del estudiante
         JPanel namePanel = createInfoField("Nombre", estudiante.getNombre());
-        JPanel idPanel = createInfoField("ID Estudiante", estudiante.getId());
+        JPanel idPanel = createInfoField("Usuario", estudiante.getUsuario());
 
         // Estado de vacunación
         JPanel statusPanel = new JPanel(new BorderLayout(0, 5));
@@ -159,11 +184,11 @@ public class EstudiantePanel extends JFrame {
         JPanel statusValuePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         statusValuePanel.setBackground(WHITE_COLOR);
 
-        JLabel statusValue = new JLabel(estudiante.getEstado());
+        JLabel statusValue = new JLabel(estado);
         statusValue.setFont(new Font("Arial", Font.BOLD, 16));
         statusValue.setOpaque(true);
 
-        if (estudiante.getEstado().equals("Al día")) {
+        if (estado.equals("al dia")) {
             statusValue.setBackground(GREEN_LIGHT);
             statusValue.setForeground(GREEN_TEXT);
         } else {
@@ -217,25 +242,46 @@ public class EstudiantePanel extends JFrame {
         alertsPanel = new JPanel();
         alertsPanel.setLayout(new BoxLayout(alertsPanel, BoxLayout.Y_AXIS));
 
-        // Alerta de vacuna pendiente
-        JPanel pendingAlert = createAlert(
-                "Vacuna Pendiente",
-                "Vacuna de Influenza programada para el 01/08/2024",
-                RED_LIGHT,
-                RED_TEXT
-        );
+        // Obtener la última vacuna aplicada
+        String ultimaVacuna = "No hay vacunas registradas";
+        String fechaUltimaVacuna = "";
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String sql = "SELECT v.nombre_vacuna, v.fecha_uso " +
+                        "FROM vacunas v " +
+                        "WHERE v.correo_estudiante = :correo " +
+                        "ORDER BY v.fecha_uso DESC " +
+                        "LIMIT 1";
+            Query<Object[]> query = session.createNativeQuery(sql);
+            query.setParameter("correo", estudiante.getUsuario());
+            Object[] result = query.uniqueResult();
+            
+            if (result != null) {
+                ultimaVacuna = (String) result[0];
+                fechaUltimaVacuna = result[1].toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Alerta de última vacuna
         JPanel lastVaccineAlert = createAlert(
                 "Última Vacuna Aplicada",
-                "Triple Viral - Aplicada el 01/02/2024",
+                ultimaVacuna + " - Aplicada el " + fechaUltimaVacuna,
                 GREEN_LIGHT,
                 GREEN_TEXT
         );
 
-        alertsPanel.add(pendingAlert);
-        alertsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        // Alerta de estado de vacunación
+        JPanel statusAlert = createAlert(
+                "Estado de Vacunación",
+                estado.equals("al dia") ? "Al día con todas las vacunas" : "Pendiente de vacunas",
+                estado.equals("al dia") ? GREEN_LIGHT : YELLOW_LIGHT,
+                estado.equals("al dia") ? GREEN_TEXT : YELLOW_TEXT
+        );
+
         alertsPanel.add(lastVaccineAlert);
+        alertsPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        alertsPanel.add(statusAlert);
     }
 
     private JPanel createAlert(String title, String message, Color bgColor, Color textColor) {
@@ -284,7 +330,7 @@ public class EstudiantePanel extends JFrame {
         titlePanel.add(historyTitle, BorderLayout.WEST);
 
         // Tabla de historial
-        String[] columns = {"Fecha", "Vacuna", "Doctor", "Ubicación", "Estado"};
+        String[] columns = {"Fecha", "Vacuna", "Dosis", "Fabricante", "Vía de Administración"};
         DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -292,15 +338,31 @@ public class EstudiantePanel extends JFrame {
             }
         };
 
-        // Agregar datos a la tabla
-        for (Vacuna vacuna : historialVacunas) {
-            tableModel.addRow(new Object[] {
-                    vacuna.getFecha(),
-                    vacuna.getNombre(),
-                    vacuna.getDoctor(),
-                    vacuna.getUbicacion(),
-                    vacuna.getEstado()
-            });
+        // Obtener historial de vacunas desde la base de datos
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String sql = "SELECT v.fecha_uso, v.nombre_vacuna, v.dosis, v.fabricante, v.via_administracion " +
+                        "FROM vacunas v " +
+                        "WHERE v.correo_estudiante = :correo " +
+                        "ORDER BY v.fecha_uso DESC";
+            Query<Object[]> query = session.createNativeQuery(sql);
+            query.setParameter("correo", estudiante.getUsuario());
+            List<Object[]> resultados = query.getResultList();
+
+            for (Object[] row : resultados) {
+                tableModel.addRow(new Object[] {
+                    row[0], // fecha_uso
+                    row[1], // nombre_vacuna
+                    row[2], // dosis
+                    row[3], // fabricante
+                    row[4]  // via_administracion
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                "Error al cargar el historial de vacunas: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
 
         JTable historyTable = new JTable(tableModel);
@@ -309,34 +371,6 @@ public class EstudiantePanel extends JFrame {
         historyTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         historyTable.getTableHeader().setBackground(LIGHT_GRAY);
         historyTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
-
-        // Renderizador personalizado para la columna de estado
-        historyTable.getColumnModel().getColumn(4).setCellRenderer(new TableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                JLabel label = new JLabel(value.toString());
-                label.setOpaque(true);
-                label.setHorizontalAlignment(JLabel.CENTER);
-                label.setFont(new Font("Arial", Font.BOLD, 14));
-
-                if (value.equals("Completada")) {
-                    label.setBackground(GREEN_LIGHT);
-                    label.setForeground(GREEN_TEXT);
-                } else {
-                    label.setBackground(YELLOW_LIGHT);
-                    label.setForeground(YELLOW_TEXT);
-                }
-
-                label.setBorder(new EmptyBorder(5, 10, 5, 10));
-
-                if (isSelected) {
-                    label.setBackground(table.getSelectionBackground());
-                    label.setForeground(table.getSelectionForeground());
-                }
-
-                return label;
-            }
-        });
 
         JScrollPane tableScrollPane = new JScrollPane(historyTable);
         tableScrollPane.setBorder(null);

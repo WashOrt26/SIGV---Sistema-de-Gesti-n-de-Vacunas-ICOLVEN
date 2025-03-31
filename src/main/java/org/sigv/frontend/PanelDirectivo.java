@@ -6,6 +6,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.ListSelectionModel;
 import java.awt.CardLayout;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.sigv.config.HibernateUtil;
 
 public class PanelDirectivo extends JFrame {
 
@@ -91,8 +94,24 @@ public class PanelDirectivo extends JFrame {
         blocksPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         // Crear los tres bloques informativos
+        JPanel[] blocks = new JPanel[3];
+        String[] titles = {"Total de Estudiantes", "Vacunas Aplicadas", "Vacunas Pendientes"};
+        String[] values = {"0", "0", "0"};
+
+        // Obtener el total de estudiantes desde la base de datos
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT COUNT(*) FROM Usuario u WHERE u.tipoUsuario = 'estudiante'";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            Long totalEstudiantes = query.uniqueResult();
+            if (totalEstudiantes != null) {
+                values[0] = totalEstudiantes.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         for (int i = 0; i < 3; i++) {
-            JPanel block = new JPanel() {
+            blocks[i] = new JPanel() {
                 @Override
                 protected void paintComponent(Graphics g) {
                     Graphics2D g2 = (Graphics2D) g.create();
@@ -110,17 +129,24 @@ public class PanelDirectivo extends JFrame {
                     g2.dispose();
                 }
             };
-            block.setPreferredSize(new Dimension(400, 150));
-            block.setBackground(Color.WHITE);
-            block.setLayout(new BorderLayout());
-            block.setOpaque(false);
+            blocks[i].setPreferredSize(new Dimension(400, 150));
+            blocks[i].setBackground(Color.WHITE);
+            blocks[i].setLayout(new BorderLayout());
+            blocks[i].setOpaque(false);
             
-            JLabel blockTitle = new JLabel("Bloque " + (i + 1), SwingConstants.CENTER);
+            // Título del bloque
+            JLabel blockTitle = new JLabel(titles[i], SwingConstants.CENTER);
             blockTitle.setFont(new Font("Arial", Font.BOLD, 18));
             blockTitle.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-            block.add(blockTitle, BorderLayout.NORTH);
+            blocks[i].add(blockTitle, BorderLayout.NORTH);
+
+            // Valor del bloque
+            JLabel valueLabel = new JLabel(values[i], SwingConstants.CENTER);
+            valueLabel.setFont(new Font("Arial", Font.BOLD, 36));
+            valueLabel.setForeground(PRIMARY_COLOR);
+            blocks[i].add(valueLabel, BorderLayout.CENTER);
             
-            blocksPanel.add(block);
+            blocksPanel.add(blocks[i]);
         }
 
         scrollableContent.add(blocksPanel, BorderLayout.NORTH);
