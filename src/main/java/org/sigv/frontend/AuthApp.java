@@ -268,9 +268,24 @@ public class AuthApp extends JFrame {
                     if (usuarioConsultado == null) {
                         JOptionPane.showMessageDialog(AuthApp.this, "Credenciales incorrectas. Intente nuevamente.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        org.sigv.frontend.MedicoPanel medicoPanel = new org.sigv.frontend.MedicoPanel(); // Crear instancia de MedicoPanel
-                        medicoPanel.setVisible(true); // Hacer visible la ventana de MedicoPanel
-                        dispose();
+                        // Redirigir al usuario según su tipo
+                        switch (usuarioConsultado.getTipoUsuario()) {
+                            case medico:
+                                org.sigv.frontend.MedicoPanel medicoPanel = new org.sigv.frontend.MedicoPanel();
+                                medicoPanel.setVisible(true);
+                                dispose();
+                                break;
+                            case administrador:
+                                org.sigv.frontend.PanelDirectivo panelDirectivo = new org.sigv.frontend.PanelDirectivo();
+                                panelDirectivo.setVisible(true);
+                                dispose();
+                                break;
+                            case estudiante:
+                                org.sigv.frontend.EstudiantePanel estudiantePanel = new org.sigv.frontend.EstudiantePanel();
+                                estudiantePanel.setVisible(true);
+                                dispose();
+                                break;
+                        }
                     }
                 }
             }
