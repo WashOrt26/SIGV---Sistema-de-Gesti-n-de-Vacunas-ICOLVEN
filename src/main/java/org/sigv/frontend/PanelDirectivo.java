@@ -9,6 +9,15 @@ import java.awt.CardLayout;
 
 public class PanelDirectivo extends JFrame {
 
+    // Colores personalizados
+    private static final Color PRIMARY_COLOR = new Color(69, 153, 126); // Color principal
+    private static final Color WHITE_COLOR = new Color(255, 255, 255); // Color blanco
+    private static final Color LIGHT_GRAY = new Color(245, 245, 245); // Color gris claro
+
+    private JPanel contentPane;
+    private JPanel mainPanel;
+    private JPanel footerPanel;
+
     public PanelDirectivo() {
         setTitle("Panel Directivo - Sistema de Vacunación");
         setBounds(100, 100, 1600, 900);
@@ -18,8 +27,23 @@ public class PanelDirectivo extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(20, 20));
         
-        // Panel principal con borde
-        JPanel mainPanel = new JPanel();
+        // Panel principal
+        contentPane = new JPanel();
+        contentPane.setLayout(new BorderLayout(0, 0));
+        contentPane.setBackground(LIGHT_GRAY);
+        setContentPane(contentPane);
+
+        // Configurar paneles
+        setupMainPanel();
+        setupFooterPanel();
+
+        // Agregar paneles al contenedor principal
+        contentPane.add(mainPanel, BorderLayout.CENTER);
+        contentPane.add(footerPanel, BorderLayout.SOUTH);
+    }
+
+    private void setupMainPanel() {
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(20, 20));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -696,7 +720,7 @@ public class PanelDirectivo extends JFrame {
         // Agregar la tabla a un JScrollPane
         JScrollPane tableScrollPaneUsuarios = new JScrollPane(tablaUsuarios);
         tableScrollPaneUsuarios.setBorder(BorderFactory.createEmptyBorder());
-        tableScrollPaneUsuarios.getViewport().setBackground(Color.WHITE);
+        tableScrollPane.getViewport().setBackground(Color.WHITE);
         tableScrollPaneUsuarios.setPreferredSize(new Dimension(800, 200));
         
         tablaUsuariosPanel.add(tableScrollPaneUsuarios, BorderLayout.CENTER);
@@ -755,8 +779,31 @@ public class PanelDirectivo extends JFrame {
         // Agregar el scrollPane al mainPanel
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        add(mainPanel);
-        setVisible(true);
+        // Configurar footer
+        setupFooterPanel();
+    }
+
+    private void setupFooterPanel() {
+        footerPanel = new JPanel();
+        footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        footerPanel.setBackground(WHITE_COLOR);
+        footerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, LIGHT_GRAY));
+
+        JButton logoutButton = new JButton("Cerrar Sesión");
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 14));
+        logoutButton.setBackground(PRIMARY_COLOR);
+        logoutButton.setForeground(WHITE_COLOR);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setBorderPainted(false);
+        logoutButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        logoutButton.setPreferredSize(new Dimension(150, 35));
+
+        logoutButton.addActionListener(e -> {
+            dispose();
+            new AuthApp().setVisible(true);
+        });
+
+        footerPanel.add(logoutButton);
     }
 
     public static void main(String[] args) {
