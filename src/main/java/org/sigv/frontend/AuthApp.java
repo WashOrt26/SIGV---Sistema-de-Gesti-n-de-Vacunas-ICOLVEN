@@ -1,24 +1,20 @@
 package org.sigv.frontend;
-///  Los comentarios de la base de datos se ven asi verdes :D
+
 import org.sigv.model.Usuario;
 import org.sigv.repository.UsuarioRepository;
 
-import javax.swing.*; // Importa componentes gráficos
-import javax.swing.border.EmptyBorder; // Para manejar bordes vacíos
-import java.awt.*; // Para manejar colores y diseño
-import java.awt.event.ActionEvent; // Para manejar eventos de acción
-import java.awt.event.ActionListener; // Para manejar eventos de acción
-import java.awt.event.FocusAdapter; // Para manejar el comportamiento del placeholder
-import java.awt.event.FocusEvent; // Para manejar el comportamiento del placeholder
-import java.util.ArrayList; // Para almacenar datos en una lista
-import java.util.List; // Para almacenar datos en una lista
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuthApp extends JFrame {
 
-    /*
-     * Se instancia la clase encargada de las operaciones sobre
-     * la base de datos
-     */
     UsuarioRepository usuarioRepository = new UsuarioRepository();
 
     /// ======================================================
@@ -30,6 +26,9 @@ public class AuthApp extends JFrame {
     private static final Color WHITE_COLOR = new Color(255, 255, 255); // Color blanco
     private static final Color LIGHT_GRAY = new Color(245, 245, 245); // Color gris claro
     private static final Color PLACEHOLDER_COLOR = new Color(160, 160, 160); // Color para el placeholder
+
+    /// Código de verificación para médicos haber lo puse asi minetras para poder mirar
+    private static final String CODIGO_VERIFICACION_MEDICO = "MED2024"; // Código para verificar médicos
 
     // Componentes de la interfaz
     private JPanel contentPane; // Panel principal
@@ -49,17 +48,16 @@ public class AuthApp extends JFrame {
     private JTextField emailRegisterField; // Campo para ingresar el email
     private JPasswordField passwordRegisterField; // Campo para ingresar la contraseña
     private ButtonGroup roleGroup; // Grupo para manejar la selección de rol
-    private JRadioButton padreRadio; // Opción de padre
-    private JRadioButton directivaRadio; // Opción de directiva
+    private JRadioButton estudianteRadio; // Opción de estudiante
     private JRadioButton medicoRadio; // Opción de médico
-    private JComboBox<String> studentComboBox; // ComboBox para seleccionar estudiante
     private JButton registerButton; // Botón para registrar
     private JButton switchToLoginButton; // Botón para cambiar a login
     private JPanel codigoVerificacionPanel; // Panel para el código de verificación
     private JTextField codigoVerificacionField; // Campo para el código de verificación
+    private JPanel gradoEstudiantePanel; // Panel para el grado del estudiante
+    private JComboBox<String> gradoComboBox; // ComboBox para seleccionar el grado
 
-
-    /// Datos de ejemplo (simulando una base de datos) Tambien deberias borrar la lista porque aja base de dato s
+    /// Datos de ejemplo (simulando una base de datos) Tambien deberias borrar la lista porque aja base de datos
     private List<Usuario> estudiantes;
 
     public AuthApp() {
@@ -214,7 +212,7 @@ public class AuthApp extends JFrame {
         passwordLoginField.setForeground(PLACEHOLDER_COLOR); // Color del texto
         passwordLoginField.setEchoChar((char) 0); // Mostrar texto para el placeholder
 
-        // Agregar comportamiento de placeholder
+        // Agregar comportamiento de placeholder de limpiar y eso
         passwordLoginField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -238,7 +236,6 @@ public class AuthApp extends JFrame {
         passwordPanel.add(passwordIcon, BorderLayout.WEST); // Agregar icono al panel
         passwordPanel.add(passwordLoginField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
-        /// Botón de login
         loginButton = new JButton("INICIAR SESIÓN"); // Botón para iniciar sesión
         loginButton.setFont(new Font("Arial", Font.BOLD, 16)); // Tamaño de fuente ajustado
         loginButton.setBackground(PRIMARY_COLOR); // Color de fondo
@@ -248,44 +245,35 @@ public class AuthApp extends JFrame {
         loginButton.setMaximumSize(new Dimension(400, 50)); // Más grande para PC
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el botón
-
-        /// ======================================================
-        ///AQUÍ VA LA CONEXIÓN CON LA BASE DE DATOS PARA LOGIN
-        /// PASOS:
-        /// 1. Validar campos no estén vacíos
-        /// 2. Obtener email y password
-        /// 3. Ejecutar consulta SQL para validar credenciales
-        /// 4. Si es válido, abrir siguiente ventana
-        /// 5. Si no, mostrar mensaje de error
-        /// ======================================================
+        /// Aqui esta la zona de validacion
         loginButton.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {
-               boolean pasoValidacion = true;
-               String email = emailLoginField.getText();
-               String password = new String(passwordLoginField.getPassword());
-               if (email.isEmpty()) {
-                   emailLoginField.setText("Correo electrónico"); // Restablecer el placeholder
-                   emailLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
-                   pasoValidacion = false;
-               }
-               if (password.isEmpty()) {
-                   passwordLoginField.setText("Contraseña"); // Restablecer el placeholder
-                   passwordLoginField.setEchoChar((char) 0); // Desactivar caracteres de contraseña
-                   passwordLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
-                   pasoValidacion = false;
-               }
-               if (pasoValidacion) {
-                   Usuario usuarioConsultado = usuarioRepository.buscarUsuario(email, password);
-                   if (usuarioConsultado == null) {
-                       JOptionPane.showMessageDialog(AuthApp.this, "Credenciales incorrectas. Intente nuevamente.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
-                   } else{
-                       org.sigv.frontend.MedicoPanel medicoPanel = new org.sigv.frontend.MedicoPanel(); // Crear instancia de MedicoPanel
-                       medicoPanel.setVisible(true); // Hacer visible la ventana de MedicoPanel
-                       dispose();
-                   }
-               }
-           }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean pasoValidacion = true;
+                String email = emailLoginField.getText();
+                String password = new String(passwordLoginField.getPassword());
+                if (email.isEmpty() || email.equals("Correo electrónico")) {
+                    emailLoginField.setText("Correo electrónico"); // Restablecer el placeholder
+                    emailLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                    pasoValidacion = false;
+                }
+                if (password.isEmpty() || password.equals("Contraseña")) {
+                    passwordLoginField.setText("Contraseña"); // Restablecer el placeholder
+                    passwordLoginField.setEchoChar((char) 0); // Desactivar caracteres de contraseña
+                    passwordLoginField.setForeground(PLACEHOLDER_COLOR); // Cambiar color del texto
+                    pasoValidacion = false;
+                }
+                if (pasoValidacion) {
+                    Usuario usuarioConsultado = usuarioRepository.buscarUsuario(email, password);
+                    if (usuarioConsultado == null) {
+                        JOptionPane.showMessageDialog(AuthApp.this, "Credenciales incorrectas. Intente nuevamente.", "Error de inicio de sesión", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        org.sigv.frontend.MedicoPanel medicoPanel = new org.sigv.frontend.MedicoPanel(); // Crear instancia de MedicoPanel
+                        medicoPanel.setVisible(true); // Hacer visible la ventana de MedicoPanel
+                        dispose();
+                    }
+                }
+            }
         });
 
         // Enlace para cambiar a registro
@@ -329,15 +317,13 @@ public class AuthApp extends JFrame {
         JPanel registerPanel = new JPanel();
         registerPanel.setLayout(new BoxLayout(registerPanel, BoxLayout.Y_AXIS)); // Orientación vertical
         registerPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
-        registerPanel.setBorder(new EmptyBorder(30, 50, 30, 50)); // Más padding
+        registerPanel.setBorder(new EmptyBorder(30, 50, 30, 50)); // Espaciado interno
 
-        // Título del formulario
         JLabel registerTitle = new JLabel("Crear Cuenta");
         registerTitle.setForeground(PRIMARY_COLOR); // Establecer el color del texto
         registerTitle.setFont(new Font("Arial", Font.BOLD, 24)); // Tamaño de fuente ajustado
         registerTitle.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el texto
 
-        // Campo de nombre
         JPanel namePanel = new JPanel(new BorderLayout()); // Panel para el campo de nombre
         namePanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
         namePanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
@@ -377,7 +363,6 @@ public class AuthApp extends JFrame {
         namePanel.add(nameIcon, BorderLayout.WEST); // Agregar icono al panel
         namePanel.add(nameRegisterField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
-        // Campo de email
         JPanel emailRegisterPanel = new JPanel(new BorderLayout()); // Panel para el campo de email
         emailRegisterPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
         emailRegisterPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
@@ -417,7 +402,6 @@ public class AuthApp extends JFrame {
         emailRegisterPanel.add(emailRegisterIcon, BorderLayout.WEST); // Agregar icono al panel
         emailRegisterPanel.add(emailRegisterField, BorderLayout.CENTER); // Agregar campo de texto al panel
 
-        // Campo de contraseña
         JPanel passwordRegisterPanel = new JPanel(new BorderLayout()); // Panel para el campo de contraseña
         passwordRegisterPanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
         passwordRegisterPanel.setMaximumSize(new Dimension(400, 50)); // Tamaño máximo
@@ -464,7 +448,7 @@ public class AuthApp extends JFrame {
         JPanel rolePanel = new JPanel();
         rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS)); // Orientación vertical
         rolePanel.setBackground(WHITE_COLOR); // Establecer el color de fondo
-        rolePanel.setMaximumSize(new Dimension(400, 150)); // Más grande para PC
+        rolePanel.setMaximumSize(new Dimension(400, 100)); // Tamaño máximo
         rolePanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alinear al centro
 
         JLabel roleLabel = new JLabel("Seleccione su rol:");
@@ -473,14 +457,16 @@ public class AuthApp extends JFrame {
 
         roleGroup = new ButtonGroup(); // Grupo para los botones de radio
 
-        JRadioButton estudianteRadio = new JRadioButton("Estudiante");
+        estudianteRadio = new JRadioButton("Estudiante");
         estudianteRadio.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
         estudianteRadio.setBackground(WHITE_COLOR); // Establecer el color de fondo
         estudianteRadio.setSelected(true); // Seleccionar por defecto
+        estudianteRadio.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
 
         medicoRadio = new JRadioButton("Médico");
         medicoRadio.setFont(new Font("Arial", Font.PLAIN, 14)); // Tamaño de fuente ajustado
         medicoRadio.setBackground(WHITE_COLOR); // Establecer el color de fondo
+        medicoRadio.setAlignmentX(Component.LEFT_ALIGNMENT); // Alinear a la izquierda
 
         // Agregar los botones de radio al grupo
         roleGroup.add(estudianteRadio);
@@ -490,10 +476,36 @@ public class AuthApp extends JFrame {
         rolePanel.add(roleLabel);
         rolePanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre el label y los botones
         rolePanel.add(estudianteRadio);
-        rolePanel.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre los botones
+        rolePanel.add(Box.createRigidArea(new Dimension(0, 5))); // Espacio entre los botones
         rolePanel.add(medicoRadio);
 
-        // Panel para el código de verificación (solo visible para médicos)
+        // Panel para el grado del estudiante (solo visible para estudiantes)
+        gradoEstudiantePanel = new JPanel();
+        gradoEstudiantePanel.setLayout(new BoxLayout(gradoEstudiantePanel, BoxLayout.Y_AXIS));
+        gradoEstudiantePanel.setBackground(WHITE_COLOR);
+        gradoEstudiantePanel.setMaximumSize(new Dimension(400, 80));
+        gradoEstudiantePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gradoEstudiantePanel.setVisible(true); // Inicialmente visible para estudiantes
+
+        JLabel gradoLabel = new JLabel("Grado del estudiante:");
+        gradoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        gradoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        /// Aqui estan los grados del estudiante que salen en crear cuenta
+        String[] grados = {"Seleccionar grado", "1° A", "1° B", "1° C", "2° A", "2° B", "2° C", "3° A", "3° B", "3° C"};
+        gradoComboBox = new JComboBox<>(grados);
+        gradoComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        gradoComboBox.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        gradoComboBox.setBackground(LIGHT_GRAY);
+        gradoComboBox.setMaximumSize(new Dimension(400, 40));
+
+        gradoEstudiantePanel.add(gradoLabel);
+        gradoEstudiantePanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        gradoEstudiantePanel.add(gradoComboBox);
+
+        /// Panel para el código de verificación (solo visible para médicos)
         codigoVerificacionPanel = new JPanel();
         codigoVerificacionPanel.setLayout(new BoxLayout(codigoVerificacionPanel, BoxLayout.Y_AXIS));
         codigoVerificacionPanel.setBackground(WHITE_COLOR);
@@ -517,7 +529,20 @@ public class AuthApp extends JFrame {
         codigoVerificacionPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         codigoVerificacionPanel.add(codigoVerificacionField);
 
-        // Botón de registro
+        // Mostrar/ocultar paneles según el rol seleccionado
+        ActionListener roleListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gradoEstudiantePanel.setVisible(estudianteRadio.isSelected());
+                codigoVerificacionPanel.setVisible(medicoRadio.isSelected());
+                registerPanel.revalidate();
+                registerPanel.repaint();
+            }
+        };
+
+        estudianteRadio.addActionListener(roleListener);
+        medicoRadio.addActionListener(roleListener);
+
         registerButton = new JButton("REGISTRARSE"); // Botón para registrar
         registerButton.setFont(new Font("Arial", Font.BOLD, 16)); // Tamaño de fuente ajustado
         registerButton.setBackground(PRIMARY_COLOR); // Color de fondo
@@ -526,22 +551,87 @@ public class AuthApp extends JFrame {
         registerButton.setBorderPainted(false); // Sin borde
         registerButton.setMaximumSize(new Dimension(400, 50)); // Más grande para PC
         registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cambiar cursor al pasar
-        registerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // ======================================================
-        // AQUÍ VA LA CONEXIÓN CON LA BASE DE DATOS PARA REGISTRO
-        // PASOS:
-        // 1. Validar campos obligatorios
-        // 2. Obtener nombre, email, password y rol
-        // 3. Si es padre, obtener ID del estudiante seleccionado
-        // 4. Ejecutar INSERT en la tabla usuarios
-        // 5. Mostrar confirmación o error
-        // ======================================================
-        // registerButton.addActionListener(new ActionListener() {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         // Lógica de inserción en BD aquí
-        //     }
-        // });
+        registerButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrar el botón
+
+        /// ======================================================
+        /// AQUÍ VA LA CONEXIÓN CON LA BASE DE DATOS PARA REGISTRO
+        /// PASOS:
+        /// 1. Validar campos obligatorios
+        /// 2. Obtener nombre, email, password y rol
+        /// 3. Si es médico, verificar código de verificación
+        /// 4. Ejecutar INSERT en la tabla usuarios
+        /// 5. Mostrar confirmación o error
+        /// ======================================================
+        /// Pues aca se validan las cosas
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ///  Aqui cuando se valida que la info se va a la base de datos y le da en registrarse deberia mandar
+                /// el coso para que inicie sección Algo como lo que tenemos en la linea 289 o  270 o no se tu puedes persona que vaya hacer esto
+                /// Validar campos
+                boolean validacionOK = true;
+                String nombre = nameRegisterField.getText();
+                String email = emailRegisterField.getText();
+                String password = new String(passwordRegisterField.getPassword());
+                boolean esMedico = medicoRadio.isSelected();
+                String grado = estudianteRadio.isSelected() ? (String) gradoComboBox.getSelectedItem() : "";
+
+                /// Validar nombre
+                if (nombre.isEmpty() || nombre.equals("Nombre y apellidos")) {
+                    JOptionPane.showMessageDialog(AuthApp.this,
+                            "Por favor ingrese su nombre completo",
+                            "Error de validación",
+                            JOptionPane.ERROR_MESSAGE);
+                    validacionOK = false;
+                    return;
+                }
+
+                /// Validar email
+                if (email.isEmpty() || email.equals("Correo electrónico") || !email.contains("@")) {
+                    JOptionPane.showMessageDialog(AuthApp.this,
+                            "Por favor ingrese un correo electrónico válido",
+                            "Error de validación",
+                            JOptionPane.ERROR_MESSAGE);
+                    validacionOK = false;
+                    return;
+                }
+
+                /// Validar contraseña
+                if (password.isEmpty() || password.equals("Contraseña") || password.length() < 6) {
+                    JOptionPane.showMessageDialog(AuthApp.this,
+                            "La contraseña debe tener al menos 6 caracteres",
+                            "Error de validación",
+                            JOptionPane.ERROR_MESSAGE);
+                    validacionOK = false;
+                    return;
+                }
+
+                /// Validar grado para estudiantes
+                if (estudianteRadio.isSelected() && (grado.equals("Seleccionar grado") || grado.isEmpty())) {
+                    JOptionPane.showMessageDialog(AuthApp.this,
+                            "Por favor seleccione un grado",
+                            "Error de validación",
+                            JOptionPane.ERROR_MESSAGE);
+                    validacionOK = false;
+                    return;
+                }
+
+                /// Falta verificar estudiante Validar código de verificación para médicos pa eso estaba la cosa de arriba
+                if (esMedico) {
+                    String codigoVerificacion = codigoVerificacionField.getText();
+                    if (!codigoVerificacion.equals(CODIGO_VERIFICACION_MEDICO)) {
+                        JOptionPane.showMessageDialog(AuthApp.this,
+                                "El código de verificación para médicos es incorrecto",
+                                "Error de validación",
+                                JOptionPane.ERROR_MESSAGE);
+                        validacionOK = false;
+                        return;
+                    }
+                }
+
+
+            }
+        });
 
         // Enlace para cambiar a login
         switchToLoginButton = new JButton("¿Ya tienes cuenta? Inicia sesión"); // Botón para cambiar a login
@@ -562,19 +652,6 @@ public class AuthApp extends JFrame {
             }
         });
 
-        // Mostrar/ocultar panel de código de verificación según el rol seleccionado
-        ActionListener roleListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                codigoVerificacionPanel.setVisible(medicoRadio.isSelected()); // Mostrar el panel de código solo si se selecciona "Médico"
-                registerPanel.revalidate(); // Revalidar el panel de registro
-                registerPanel.repaint(); // Repaint para actualizar la interfaz
-            }
-        };
-
-        estudianteRadio.addActionListener(roleListener);
-        medicoRadio.addActionListener(roleListener);
-
         // Agregar componentes al panel de registro
         registerPanel.add(Box.createVerticalGlue()); // Espacio flexible
         registerPanel.add(registerTitle); // Agregar título
@@ -586,15 +663,11 @@ public class AuthApp extends JFrame {
         registerPanel.add(passwordRegisterPanel); // Agregar campo de contraseña
         registerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
         registerPanel.add(rolePanel); // Agregar panel de selección de rol
-        registerPanel.add(Box.createHorizontalGlue()); // Espacio flexible a la izquierda
+        registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
+        registerPanel.add(gradoEstudiantePanel); // Agregar panel de grado del estudiante
         registerPanel.add(codigoVerificacionPanel); // Agregar panel de código de verificación
         registerPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Espacio rígido
         registerPanel.add(registerButton); // Agregar botón de registro
-        registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
-        registerPanel.add(switchToLoginButton); // Agregar enlace a login
-        registerPanel.add(Box.createVerticalGlue()); // Espacio flexible
-
-        // Agregar panel de registro al panel de formularios
         registerPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Espacio rígido
         registerPanel.add(switchToLoginButton); // Agregar enlace a login
         registerPanel.add(Box.createVerticalGlue()); // Espacio flexible
