@@ -27,9 +27,6 @@ public class AuthApp extends JFrame {
     private static final Color LIGHT_GRAY = new Color(245, 245, 245); // Color gris claro
     private static final Color PLACEHOLDER_COLOR = new Color(160, 160, 160); // Color para el placeholder
 
-    /// Código de verificación para médicos haber lo puse asi minetras para poder mirar
-    private static final String CODIGO_VERIFICACION_MEDICO = "MED2024"; // Código para verificar médicos
-
     // Componentes de la interfaz
     private JPanel contentPane; // Panel principal
     private JPanel leftPanel; // Panel izquierdo (verde)
@@ -506,43 +503,9 @@ public class AuthApp extends JFrame {
         gradoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         gradoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        /// Aqui estan los grados del estudiante que salen en crear cuenta
-        String[] grados = {"Seleccionar grado", "1° A", "1° B", "1° C", "2° A", "2° B", "2° C", "3° A", "3° B", "3° C"};
-        gradoComboBox = new JComboBox<>(grados);
-        gradoComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
-        gradoComboBox.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        gradoComboBox.setBackground(LIGHT_GRAY);
-        gradoComboBox.setMaximumSize(new Dimension(400, 40));
 
-        gradoEstudiantePanel.add(gradoLabel);
-        gradoEstudiantePanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        gradoEstudiantePanel.add(gradoComboBox);
 
-        /// Panel para el código de verificación (solo visible para médicos)
-        codigoVerificacionPanel = new JPanel();
-        codigoVerificacionPanel.setLayout(new BoxLayout(codigoVerificacionPanel, BoxLayout.Y_AXIS));
-        codigoVerificacionPanel.setBackground(WHITE_COLOR);
-        codigoVerificacionPanel.setMaximumSize(new Dimension(400, 80));
-        codigoVerificacionPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        codigoVerificacionPanel.setVisible(false); // Inicialmente oculto
 
-        JLabel codigoLabel = new JLabel("Código de verificación:");
-        codigoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        codigoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        codigoVerificacionField = new JTextField();
-        codigoVerificacionField.setFont(new Font("Arial", Font.PLAIN, 14));
-        codigoVerificacionField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        codigoVerificacionField.setBackground(LIGHT_GRAY);
-        codigoVerificacionField.setMaximumSize(new Dimension(400, 40));
-
-        codigoVerificacionPanel.add(codigoLabel);
-        codigoVerificacionPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        codigoVerificacionPanel.add(codigoVerificacionField);
 
         // Mostrar/ocultar paneles según el rol seleccionado
         ActionListener roleListener = new ActionListener() {
@@ -620,30 +583,6 @@ public class AuthApp extends JFrame {
                     validacionOK = false;
                     return;
                 }
-
-                /// Validar grado para estudiantes
-                if (estudianteRadio.isSelected() && (grado.equals("Seleccionar grado") || grado.isEmpty())) {
-                    JOptionPane.showMessageDialog(AuthApp.this,
-                            "Por favor seleccione un grado",
-                            "Error de validación",
-                            JOptionPane.ERROR_MESSAGE);
-                    validacionOK = false;
-                    return;
-                }
-
-                /// Falta verificar estudiante Validar código de verificación para médicos pa eso estaba la cosa de arriba
-                if (esMedico) {
-                    String codigoVerificacion = codigoVerificacionField.getText();
-                    if (!codigoVerificacion.equals(CODIGO_VERIFICACION_MEDICO)) {
-                        JOptionPane.showMessageDialog(AuthApp.this,
-                                "El código de verificación para médicos es incorrecto",
-                                "Error de validación",
-                                JOptionPane.ERROR_MESSAGE);
-                        validacionOK = false;
-                        return;
-                    }
-                }
-
 
             }
         });
