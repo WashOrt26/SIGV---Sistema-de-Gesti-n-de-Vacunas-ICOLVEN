@@ -38,6 +38,30 @@ public class UsuarioRepository {
             return query.uniqueResult(); // Devuelve el usuario o null si no existe
         }
     }
+
+    // Metodo para guardar estudiantes
+    public void guardarEstudiante(String usuario, String grado) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            String sql = "INSERT INTO estudiante (correo, grado, estado_estudiante) VALUES (:correo, :grado, 'pendiente')";
+            Query query = session.createNativeQuery(sql);
+            query.setParameter("correo", usuario);
+            query.setParameter("grado", grado);
+            query.executeUpdate();
+
+            transaction.commit();
+            System.out.println("Estudiante guardado correctamente.");
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
+
     // Método para listar estudiantes
     public List<Usuario> listarEstudiantes() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

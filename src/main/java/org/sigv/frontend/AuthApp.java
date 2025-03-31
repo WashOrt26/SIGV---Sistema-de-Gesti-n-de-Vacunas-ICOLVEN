@@ -1,5 +1,6 @@
 package org.sigv.frontend;
 
+import org.sigv.model.TipoUsuario;
 import org.sigv.model.Usuario;
 import org.sigv.repository.UsuarioRepository;
 
@@ -581,9 +582,7 @@ public class AuthApp extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ///  Aqui cuando se valida que la info se va a la base de datos y le da en registrarse deberia mandar
-                /// el coso para que inicie sección Algo como lo que tenemos en la linea 289 o  270 o no se tu puedes persona que vaya hacer esto
-                /// Validar campos
+
                 boolean validacionOK = true;
                 String nombre = nameRegisterField.getText();
                 String email = emailRegisterField.getText();
@@ -642,6 +641,23 @@ public class AuthApp extends JFrame {
                         validacionOK = false;
                         return;
                     }
+                }
+
+                if (validacionOK) {
+                    // Determinar el tipo de usuario
+                    TipoUsuario tipoUsuario = estudianteRadio.isSelected() ? TipoUsuario.estudiante : TipoUsuario.medico;
+
+                    // Crear objeto Usuario
+                    Usuario nuevoUsuario = new Usuario(email, nombre, password, tipoUsuario);
+
+                    // Guardar en la base de datos
+                    UsuarioRepository usuarioRepo = new UsuarioRepository();
+                    usuarioRepo.guardarUsuario(nuevoUsuario);
+
+                    JOptionPane.showMessageDialog(AuthApp.this,
+                            "Registro exitoso. Ahora puede iniciar sesión.",
+                            "Registro completado",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
 
 

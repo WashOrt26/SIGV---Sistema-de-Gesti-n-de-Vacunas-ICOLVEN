@@ -22,7 +22,7 @@ public class Usuario {
     @Column(name = "tipo_usuario", nullable = false)
     private TipoUsuario tipoUsuario;
 
-    @Column(name = "fecha_registro", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false)
+    @Column(name = "fecha_registro", updatable = false)
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 
     public Usuario() {
@@ -56,7 +56,7 @@ public class Usuario {
         return contrasena;
     }
 
-    public void setContraseña(String contrasena) {
+    public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
 
